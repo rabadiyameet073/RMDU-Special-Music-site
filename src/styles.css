@@ -4,20 +4,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -46,19 +32,6 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
   --font-display: "Bebas Neue", sans-serif;
   --font-body: "DM Sans", sans-serif;
   --font-devanagari: "Yatra One", cursive;
@@ -86,59 +59,11 @@
   --border: oklch(0.98 0.02 80 / 14%);
   --input: oklch(0.98 0.02 80 / 18%);
   --ring: oklch(0.66 0.19 42);
-  --chart-1: oklch(0.66 0.19 42);
-  --chart-2: oklch(0.74 0.15 74);
-  --chart-3: oklch(0.55 0.12 50);
-  --chart-4: oklch(0.82 0.12 88);
-  --chart-5: oklch(0.45 0.1 40);
-  --sidebar: oklch(0.24 0.032 62);
-  --sidebar-foreground: oklch(0.96 0.014 82);
-  --sidebar-primary: oklch(0.66 0.19 42);
-  --sidebar-primary-foreground: oklch(0.16 0.03 60);
-  --sidebar-accent: oklch(0.31 0.036 62);
-  --sidebar-accent-foreground: oklch(0.95 0.014 82);
-  --sidebar-border: oklch(0.98 0.02 80 / 14%);
-  --sidebar-ring: oklch(0.66 0.19 42);
 
   --glass-bg: oklch(0.22 0.03 62 / 78%);
   --glass-border: oklch(0.98 0.02 80 / 18%);
   --shadow-float: 0 24px 60px -20px oklch(0.08 0.02 60 / 85%);
   --gradient-warm: linear-gradient(135deg, oklch(0.7 0.2 42), oklch(0.78 0.15 74));
-}
-
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
 @layer base {
@@ -186,4 +111,88 @@
 
 .animate-ambient-glow {
   animation: slow-pulse-glow 8s ease-in-out infinite;
+}
+
+@keyframes vinyl-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-vinyl {
+  animation: vinyl-spin 5s linear infinite;
+}
+
+.animate-vinyl-paused {
+  animation: vinyl-spin 5s linear infinite;
+  animation-play-state: paused;
+}
+
+/* Vintage Radio styling utilities */
+.retro-radio-body {
+  background: radial-gradient(circle at 50% 0%, #3a2618 0%, #20140b 60%, #120b06 100%);
+  box-shadow: 
+    0 24px 60px -15px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 200, 120, 0.3),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(180, 110, 50, 0.35);
+}
+
+.retro-tuner-glass {
+  background: radial-gradient(ellipse at center, rgba(60, 30, 8, 0.8) 0%, rgba(20, 10, 3, 0.95) 100%);
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.9),
+    inset 0 0 16px rgba(255, 160, 40, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.retro-knob {
+  background: conic-gradient(
+    from 0deg,
+    #2a221b 0deg,
+    #4a3c30 45deg,
+    #1d1611 90deg,
+    #534336 135deg,
+    #2a221b 180deg,
+    #4a3c30 225deg,
+    #1d1611 270deg,
+    #534336 315deg,
+    #2a221b 360deg
+  );
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 2px rgba(255, 220, 150, 0.4),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.8),
+    0 0 0 1.5px rgba(160, 100, 45, 0.6);
+}
+
+.retro-pushbutton {
+  background: linear-gradient(180deg, #3d2b1f 0%, #20150d 100%);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 210, 140, 0.35),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(140, 85, 35, 0.4);
+}
+
+.retro-pushbutton:active {
+  transform: translateY(1.5px);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.6),
+    inset 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.retro-main-play {
+  background: radial-gradient(circle at 35% 30%, #ffaa3b 0%, #e66a15 65%, #943302 100%);
+  box-shadow:
+    0 4px 18px rgba(230, 106, 21, 0.6),
+    inset 0 2px 3px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 6px rgba(100, 30, 0, 0.8),
+    0 0 0 2px rgba(255, 180, 80, 0.4);
+}
+
+.retro-main-play:active {
+  transform: scale(0.96) translateY(1px);
+  box-shadow:
+    0 2px 8px rgba(230, 106, 21, 0.4),
+    inset 0 3px 8px rgba(0, 0, 0, 0.7);
 }
