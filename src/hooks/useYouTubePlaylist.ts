@@ -79,24 +79,53 @@ function loadApi(): Promise<void> {
 type Meta = { title?: string; author?: string; thumbnail_url?: string };
 
 export async function fetchMeta(videoId: string): Promise<Meta> {
+  // 1. Try official YouTube oEmbed API for highest accuracy
+  try {
+    const res = await fetch(
+      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`,
+    );
+    if (res.ok) {
+      const json = (await res.json()) as {
+        title?: string;
+        author_name?: string;
+        thumbnail_url?: string;
+      };
+      return {
+        title: json.title,
+        author: json.author_name,
+        thumbnail_url:
+          json.thumbnail_url || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+      };
+    }
+  } catch {
+    // Fallback to noembed
+  }
+
+  // 2. Fallback to noembed proxy
   try {
     const res = await fetch(
       `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`,
     );
-    if (!res.ok) return {};
-    const json = (await res.json()) as {
-      title?: string;
-      author_name?: string;
-      thumbnail_url?: string;
-    };
-    return {
-      title: json.title,
-      author: json.author_name,
-      thumbnail_url: json.thumbnail_url,
-    };
+    if (res.ok) {
+      const json = (await res.json()) as {
+        title?: string;
+        author_name?: string;
+        thumbnail_url?: string;
+      };
+      return {
+        title: json.title,
+        author: json.author_name,
+        thumbnail_url:
+          json.thumbnail_url || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+      };
+    }
   } catch {
-    return {};
+    // Default fallback
   }
+
+  return {
+    thumbnail_url: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+  };
 }
 
 export function extractYouTubeId(urlOrId: string): string | null {
@@ -269,6 +298,22 @@ export function useYouTubePlaylist() {
             // 1 = PLAYING, 2 = PAUSED, 0 = ENDED, 3 = BUFFERING
             if (e.data === 1) {
               setPlaying(true);
+              // Update video metadata directly from player if available
+              const vData = player.getVideoData?.();
+              if (vData && vData.title) {
+                const curIdx = indexRef.current;
+                setTracks((cur) => {
+                  const t = cur[curIdx];
+                  if (!t) return cur;
+                  const copy = [...cur];
+                  copy[curIdx] = {
+                    ...t,
+                    title: vData.title || t.title,
+                    author: vData.author || t.author,
+                  };
+                  return copy;
+                });
+              }
             } else if (e.data === 2) {
               setPlaying(false);
             } else if (e.data === 0) {
@@ -277,8 +322,14 @@ export function useYouTubePlaylist() {
               if (currentRepeat === "one") {
                 playerRef.current?.seekTo(0, true);
                 playerRef.current?.playVideo();
-              } else {
+              } else if (currentRepeat === "all") {
                 next();
+              } else if (currentRepeat === "off") {
+                if (indexRef.current < tracksRef.current.length - 1) {
+                  next();
+                } else {
+                  setPlaying(false);
+                }
               }
             }
 
@@ -329,6 +380,21 @@ export function useYouTubePlaylist() {
 
   const seek = useCallback((s: number) => {
     playerRef.current?.seekTo(s, true);
+  }, []);
+
+  const skipForward = useCallback((sec = 10) => {
+    const p = playerRef.current;
+    if (!p) return;
+    const cur = p.getCurrentTime() || 0;
+    const dur = p.getDuration() || 0;
+    p.seekTo(Math.min(dur, cur + sec), true);
+  }, []);
+
+  const skipBackward = useCallback((sec = 10) => {
+    const p = playerRef.current;
+    if (!p) return;
+    const cur = p.getCurrentTime() || 0;
+    p.seekTo(Math.max(0, cur - sec), true);
   }, []);
 
   const setVolume = useCallback((v: number) => {
@@ -401,6 +467,53 @@ export function useYouTubePlaylist() {
       });
 
       return copy;
+    });
+  }, []);
+
+  const moveTrackToTop = useCallback((fromIndex: number) => {
+    moveTrack(fromIndex, 0);
+  }, [moveTrack]);
+
+  const moveTrackToBottom = useCallback((fromIndex: number) => {
+    setTracks((prev) => {
+      if (fromIndex < 0 || fromIndex >= prev.length || fromIndex === prev.length - 1) return prev;
+      return moveTrack(fromIndex, prev.length - 1);
+    });
+  }, [moveTrack]);
+
+  const shuffleQueue = useCallback(() => {
+    setTracks((prev) => {
+      if (prev.length <= 1) return prev;
+      const currentTrack = prev[indexRef.current];
+      const copy = [...prev];
+      // Fisher-Yates shuffle
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      // Re-find current track index
+      if (currentTrack) {
+        const newIdx = copy.findIndex((t) => t.videoId === currentTrack.videoId);
+        if (newIdx !== -1) {
+          setIndex(newIdx);
+        }
+      }
+      return copy;
+    });
+  }, []);
+
+  const reverseQueue = useCallback(() => {
+    setTracks((prev) => {
+      if (prev.length <= 1) return prev;
+      const currentTrack = prev[indexRef.current];
+      const reversed = [...prev].reverse();
+      if (currentTrack) {
+        const newIdx = reversed.findIndex((t) => t.videoId === currentTrack.videoId);
+        if (newIdx !== -1) {
+          setIndex(newIdx);
+        }
+      }
+      return reversed;
     });
   }, []);
 
@@ -496,8 +609,14 @@ export function useYouTubePlaylist() {
     prev,
     playAt,
     seek,
+    skipForward,
+    skipBackward,
     toggleMute,
     moveTrack,
+    moveTrackToTop,
+    moveTrackToBottom,
+    shuffleQueue,
+    reverseQueue,
     removeTrack,
     addTrack,
     clearQueue,
