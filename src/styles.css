@@ -105,8 +105,8 @@
 }
 
 @keyframes slow-pulse-glow {
-  0%, 100% { opacity: 0.35; transform: scale(1); }
-  50% { opacity: 0.55; transform: scale(1.04); }
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.04); }
 }
 
 .animate-ambient-glow {
@@ -127,72 +127,95 @@
   animation-play-state: paused;
 }
 
-/* Vintage Radio styling utilities */
+@keyframes vu-needle {
+  0% { transform: rotate(-25deg); }
+  25% { transform: rotate(15deg); }
+  50% { transform: rotate(-5deg); }
+  75% { transform: rotate(20deg); }
+  100% { transform: rotate(-25deg); }
+}
+
+.animate-vu-active {
+  animation: vu-needle 1.2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* ========================================================================= */
+/* 📻 VINTAGE WORKSHOP RADIO RETRO STYLING SYSTEM 📻 */
+/* ========================================================================= */
+
 .retro-radio-body {
-  background: radial-gradient(circle at 50% 0%, #3a2618 0%, #20140b 60%, #120b06 100%);
+  background: 
+    linear-gradient(180deg, rgba(255, 200, 120, 0.08) 0%, transparent 8%),
+    radial-gradient(ellipse at 50% 0%, #442a19 0%, #25160c 45%, #140b05 100%);
   box-shadow: 
-    0 24px 60px -15px rgba(0, 0, 0, 0.9),
-    inset 0 1px 0 rgba(255, 200, 120, 0.3),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(180, 110, 50, 0.35);
+    0 30px 70px -10px rgba(0, 0, 0, 0.95),
+    inset 0 2px 0 rgba(255, 215, 140, 0.35),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.9),
+    0 0 0 2px rgba(190, 115, 45, 0.45);
+}
+
+.retro-speaker-grille {
+  background-image: radial-gradient(#110804 35%, transparent 36%);
+  background-size: 4px 4px;
 }
 
 .retro-tuner-glass {
-  background: radial-gradient(ellipse at center, rgba(60, 30, 8, 0.8) 0%, rgba(20, 10, 3, 0.95) 100%);
+  background: radial-gradient(ellipse at center, rgba(80, 40, 10, 0.85) 0%, rgba(25, 12, 4, 0.98) 100%);
   box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.9),
-    inset 0 0 16px rgba(255, 160, 40, 0.15),
-    0 1px 0 rgba(255, 255, 255, 0.08);
+    inset 0 3px 10px rgba(0, 0, 0, 0.95),
+    inset 0 0 20px rgba(255, 170, 50, 0.2),
+    0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .retro-knob {
   background: conic-gradient(
     from 0deg,
     #2a221b 0deg,
-    #4a3c30 45deg,
+    #534336 45deg,
     #1d1611 90deg,
-    #534336 135deg,
+    #635041 135deg,
     #2a221b 180deg,
-    #4a3c30 225deg,
+    #534336 225deg,
     #1d1611 270deg,
-    #534336 315deg,
+    #635041 315deg,
     #2a221b 360deg
   );
   box-shadow:
-    0 4px 10px rgba(0, 0, 0, 0.6),
-    inset 0 1px 2px rgba(255, 220, 150, 0.4),
-    inset 0 -2px 4px rgba(0, 0, 0, 0.8),
-    0 0 0 1.5px rgba(160, 100, 45, 0.6);
+    0 6px 14px rgba(0, 0, 0, 0.75),
+    inset 0 1px 2px rgba(255, 230, 170, 0.5),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.9),
+    0 0 0 2px rgba(180, 115, 50, 0.7);
 }
 
 .retro-pushbutton {
-  background: linear-gradient(180deg, #3d2b1f 0%, #20150d 100%);
+  background: linear-gradient(180deg, #463122 0%, #26190f 100%);
   box-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 210, 140, 0.35),
-    inset 0 -1px 2px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(140, 85, 35, 0.4);
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 220, 150, 0.4),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.8),
+    0 0 0 1.5px rgba(160, 95, 40, 0.5);
 }
 
 .retro-pushbutton:active {
-  transform: translateY(1.5px);
+  transform: translateY(2px);
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.6),
-    inset 0 2px 4px rgba(0, 0, 0, 0.8);
+    0 1px 2px rgba(0, 0, 0, 0.7),
+    inset 0 3px 6px rgba(0, 0, 0, 0.9);
 }
 
 .retro-main-play {
-  background: radial-gradient(circle at 35% 30%, #ffaa3b 0%, #e66a15 65%, #943302 100%);
+  background: radial-gradient(circle at 35% 30%, #ffb347 0%, #eb6f15 60%, #9e3602 100%);
   box-shadow:
-    0 4px 18px rgba(230, 106, 21, 0.6),
-    inset 0 2px 3px rgba(255, 255, 255, 0.6),
-    inset 0 -3px 6px rgba(100, 30, 0, 0.8),
-    0 0 0 2px rgba(255, 180, 80, 0.4);
+    0 6px 20px rgba(235, 111, 21, 0.65),
+    inset 0 2px 4px rgba(255, 255, 255, 0.7),
+    inset 0 -4px 8px rgba(90, 25, 0, 0.9),
+    0 0 0 3px rgba(255, 195, 95, 0.5);
 }
 
 .retro-main-play:active {
-  transform: scale(0.96) translateY(1px);
+  transform: scale(0.95) translateY(2px);
   box-shadow:
-    0 2px 8px rgba(230, 106, 21, 0.4),
-    inset 0 3px 8px rgba(0, 0, 0, 0.7);
+    0 2px 8px rgba(235, 111, 21, 0.4),
+    inset 0 4px 10px rgba(0, 0, 0, 0.8);
 }

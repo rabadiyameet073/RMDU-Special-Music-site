@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Activity,
   ArrowUpRight,
   ChevronDown,
   ChevronUp,
@@ -269,7 +270,7 @@ function Index() {
       </header>
 
       {/* Main Hero Center Stage */}
-      <main className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center pb-24">
+      <main className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center pb-28">
         <div className="relative group">
           {currentCover && (
             <div
@@ -277,8 +278,8 @@ function Index() {
               style={{ backgroundImage: `url(${currentCover})` }}
             />
           )}
-          <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full border border-amber-700/40 bg-black/30 backdrop-blur-sm mb-3">
-            <Zap className="size-3 text-amber-500" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-amber-700/50 bg-black/40 backdrop-blur-sm mb-3 shadow-md">
+            <Zap className="size-3 text-amber-400" />
             <p className="font-mono-ui text-[0.7rem] uppercase tracking-[0.35em] text-accent font-semibold">
               SOLID-STATE ALL-WAVE RADIO
             </p>
@@ -288,18 +289,18 @@ function Index() {
           </h1>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-foreground/80 font-mono-ui">
-          <span className="px-3 py-1 rounded-lg border border-amber-900/50 bg-[#1d1209]/70 text-amber-200/90 shadow-sm">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5 text-xs text-foreground/80 font-mono-ui">
+          <span className="px-3 py-1 rounded-lg border border-amber-900/50 bg-[#1d1209]/80 text-amber-200/90 shadow-sm">
             📻 {total} Radio Tracks
           </span>
           {totalDuration > 0 && (
-            <span className="px-3 py-1 rounded-lg border border-amber-900/50 bg-[#1d1209]/70 text-amber-200/90 shadow-sm">
+            <span className="px-3 py-1 rounded-lg border border-amber-900/50 bg-[#1d1209]/80 text-amber-200/90 shadow-sm">
               ⏱️ {fmt(totalDuration)} Total
             </span>
           )}
           <button
             onClick={() => setQueueOpen(true)}
-            className="px-3.5 py-1 rounded-lg bg-amber-600/30 hover:bg-amber-600/40 border border-amber-500/50 text-amber-100 font-semibold transition-all inline-flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+            className="px-3.5 py-1 rounded-lg bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/50 text-amber-100 font-semibold transition-all inline-flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
           >
             <ListMusic className="size-3.5 text-amber-400" />
             Station Queue
@@ -309,7 +310,7 @@ function Index() {
 
       {/* Video Player Floating Modal */}
       <section
-        className={`absolute bottom-36 left-1/2 z-40 w-[min(92vw,34rem)] -translate-x-1/2 rounded-2xl border-2 border-amber-700/50 bg-[#1c120a]/95 shadow-[0_20px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 ${
+        className={`absolute bottom-40 left-1/2 z-40 w-[min(92vw,34rem)] -translate-x-1/2 rounded-2xl border-2 border-amber-700/50 bg-[#1c120a]/95 shadow-[0_20px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 ${
           embedOpen
             ? "pointer-events-auto translate-y-0 opacity-100 scale-100"
             : "pointer-events-none translate-y-6 opacity-0 scale-95"
@@ -340,7 +341,7 @@ function Index() {
 
       {/* Playlist Queue Drawer with Dynamic Song Banner Cards */}
       <section
-        className={`absolute bottom-36 left-1/2 z-30 w-[min(94vw,44rem)] -translate-x-1/2 rounded-3xl border-2 border-amber-700/40 bg-[#1e130b]/95 shadow-[0_24px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 flex flex-col ${
+        className={`absolute bottom-40 left-1/2 z-30 w-[min(94vw,44rem)] -translate-x-1/2 rounded-3xl border-2 border-amber-700/40 bg-[#1e130b]/95 shadow-[0_24px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 flex flex-col ${
           queueOpen
             ? "pointer-events-auto translate-y-0 opacity-100 scale-100"
             : "pointer-events-none translate-y-6 opacity-0 scale-95"
@@ -550,32 +551,41 @@ function Index() {
       {/* ========================================================================= */}
       {/* 📻 VINTAGE WORKSITE RADIO CONSOLE (REDESIGNED BOTTOM FLOATING BAR) 📻 */}
       {/* ========================================================================= */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center px-3 sm:px-4">
-        <div className="pointer-events-auto retro-radio-body relative flex w-full max-w-4xl flex-col rounded-3xl p-3 sm:p-3.5 border-2 border-amber-700/40">
-          {/* Top Brass Accent Plate with Rivets & Model Stamp */}
-          <div className="mb-2 flex items-center justify-between px-1.5 text-[0.62rem] font-mono-ui uppercase tracking-widest text-amber-400/70 border-b border-amber-800/30 pb-1">
-            <div className="flex items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-amber-600/80 shadow-[0_0_3px_#d97706]" />
-              <span className="font-bold text-amber-300/80">RMDU ALL-WAVE RECEIVER</span>
-              <span className="hidden sm:inline text-amber-600/60">• MODEL SPEC-003</span>
-            </div>
+      <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-2 sm:px-4">
+        <div className="pointer-events-auto retro-radio-body relative flex w-full max-w-4xl flex-col rounded-3xl p-3 sm:p-4 border-2 border-amber-700/50">
+          {/* 4 Corner Brass Rivets */}
+          <span className="absolute top-2 left-2 size-2 rounded-full bg-amber-400/70 border border-amber-800 shadow-sm" />
+          <span className="absolute top-2 right-2 size-2 rounded-full bg-amber-400/70 border border-amber-800 shadow-sm" />
+          <span className="absolute bottom-2 left-2 size-2 rounded-full bg-amber-400/70 border border-amber-800 shadow-sm" />
+          <span className="absolute bottom-2 right-2 size-2 rounded-full bg-amber-400/70 border border-amber-800 shadow-sm" />
+
+          {/* Top Brass Identification Plate */}
+          <div className="mb-2 flex items-center justify-between px-2 text-[0.62rem] font-mono-ui uppercase tracking-widest text-amber-400/80 border-b border-amber-800/40 pb-1.5">
             <div className="flex items-center gap-2">
-              <span className="hidden sm:inline text-amber-500/60 font-mono-ui">HI-FI STEREO</span>
-              <span className="size-1.5 rounded-full bg-amber-600/80 shadow-[0_0_3px_#d97706]" />
+              <span className="size-1.5 rounded-full bg-amber-500 animate-pulse shadow-[0_0_4px_#f59e0b]" />
+              <span className="font-bold text-amber-200 tracking-wider">
+                ✦ SOLID-STATE ALL-WAVE RADIO • RMDU SPEC-003 ✦
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="hidden sm:inline text-amber-400/70 font-mono-ui font-semibold">
+                VALVE TONE &bull; STEREO HI-FI
+              </span>
+              <span className="size-1.5 rounded-full bg-amber-500 shadow-[0_0_3px_#f59e0b]" />
             </div>
           </div>
 
-          {/* Main Control Console Row */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5">
-            {/* 1. Spinning Vinyl Record / Album Art Spindle */}
+          {/* Main Console Deck Layout */}
+          <div className="flex items-center gap-2.5 sm:gap-4">
+            {/* 1. Spinning Vinyl Record / Album Art Turntable */}
             <button
               onClick={() => setEmbedOpen((v) => !v)}
-              title={embedOpen ? "Close video display" : "Open video display"}
-              className="group relative size-12 sm:size-14 shrink-0 rounded-full bg-[#110a05] p-0.5 ring-2 ring-amber-700/50 hover:ring-amber-500 transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.8)]"
+              title={embedOpen ? "Close CRT video monitor" : "Open CRT video monitor"}
+              className="group relative size-13 sm:size-15 shrink-0 rounded-full bg-[#110a05] p-0.5 ring-2 ring-amber-700/60 hover:ring-amber-400 transition-all cursor-pointer shadow-[0_4px_14px_rgba(0,0,0,0.85)]"
             >
               {/* Vinyl Grooves Background */}
               <div
-                className={`relative size-full rounded-full overflow-hidden border border-amber-900/40 shadow-inner ${
+                className={`relative size-full rounded-full overflow-hidden border border-amber-900/60 shadow-inner ${
                   p.playing ? "animate-vinyl" : "animate-vinyl-paused"
                 }`}
               >
@@ -586,33 +596,33 @@ function Index() {
                     className="size-full object-cover"
                   />
                 ) : (
-                  <div className="size-full bg-amber-950/80 flex items-center justify-center">
-                    <Disc3 className="size-6 text-amber-500/60" />
+                  <div className="size-full bg-amber-950/90 flex items-center justify-center">
+                    <Disc3 className="size-7 text-amber-500/70" />
                   </div>
                 )}
                 {/* Center Brass Spindle Pin */}
-                <div className="absolute inset-0 m-auto size-3 rounded-full bg-amber-400 border border-amber-700 shadow-md flex items-center justify-center">
-                  <div className="size-1 rounded-full bg-black/80" />
+                <div className="absolute inset-0 m-auto size-3.5 rounded-full bg-gradient-to-tr from-amber-600 via-amber-300 to-amber-700 border border-amber-800 shadow-md flex items-center justify-center">
+                  <div className="size-1.5 rounded-full bg-black/90" />
                 </div>
               </div>
 
               {/* Hover CRT expand icon */}
-              <span className="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-amber-200">
+              <span className="absolute inset-0 rounded-full bg-black/65 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-amber-200">
                 {embedOpen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
               </span>
             </button>
 
             {/* 2. Track Title & Artist Marquee */}
-            <div className="min-w-0 max-w-[110px] sm:max-w-[160px] md:max-w-[190px]">
+            <div className="min-w-0 max-w-[105px] sm:max-w-[155px] md:max-w-[185px]">
               <p className="truncate text-xs sm:text-sm font-bold text-amber-100 tracking-tight">
-                {p.current?.title ?? (p.ready ? "Station Ready" : "Tuning Radio…")}
+                {p.current?.title ?? (p.ready ? "Station Ready" : "Tuning Station…")}
               </p>
-              <p className="truncate text-[0.68rem] text-amber-400/70 font-mono-ui">
-                {p.current?.author ?? "RMDU Special Radio"}
+              <p className="truncate text-[0.68rem] text-amber-400/75 font-mono-ui font-medium">
+                {p.current?.author ?? "RMDU Radio"}
               </p>
             </div>
 
-            {/* 3. Vintage Backlit Radio Frequency Dial (Progress Seeker) */}
+            {/* 3. Backlit Radio Frequency Dial Scale (Track Seeker) */}
             <div className="hidden min-w-0 flex-1 flex-col gap-0.5 md:flex">
               <div
                 ref={barRef}
@@ -631,11 +641,18 @@ function Index() {
                   const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
                   p.seek(ratio * p.duration);
                 }}
-                className="group relative h-8 w-full cursor-pointer rounded-xl retro-tuner-glass border border-amber-600/40 p-1 overflow-hidden"
+                className="group relative h-9 w-full cursor-pointer rounded-xl retro-tuner-glass border border-amber-600/50 p-1 overflow-hidden select-none"
               >
-                {/* Vintage Radio Dial Frequency Scale Grid */}
-                <div className="absolute inset-x-2 inset-y-0 flex items-center justify-between text-[0.55rem] font-mono-ui text-amber-500/40 pointer-events-none select-none">
-                  <span>88</span>
+                {/* Dual AM/FM Printed Radio Frequency Scale */}
+                <div className="absolute inset-x-2.5 top-0.5 flex justify-between text-[0.52rem] font-mono-ui text-amber-500/50 pointer-events-none">
+                  <span>AM 530</span>
+                  <span>700</span>
+                  <span>1000</span>
+                  <span>1300</span>
+                  <span>1600 kHz</span>
+                </div>
+                <div className="absolute inset-x-2.5 bottom-0.5 flex justify-between text-[0.52rem] font-mono-ui text-amber-400/40 pointer-events-none">
+                  <span>FM 88</span>
                   <span>92</span>
                   <span>96</span>
                   <span>100</span>
@@ -645,23 +662,23 @@ function Index() {
 
                 {/* Progress Track fill */}
                 <div
-                  className="absolute inset-y-1 left-1 rounded-lg bg-gradient-to-r from-amber-600/20 via-amber-500/30 to-amber-400/40 transition-all duration-100"
+                  className="absolute inset-y-1.5 left-1 rounded-lg bg-gradient-to-r from-amber-700/20 via-amber-500/30 to-amber-400/40 transition-all duration-100"
                   style={{ width: `${progress}%` }}
                 />
 
-                {/* Glowing Vintage Red/Amber Tuning Needle */}
+                {/* Glowing Vintage Red Analog Tuning Needle */}
                 <div
-                  className="absolute top-0 bottom-0 w-0.5 bg-red-500 shadow-[0_0_8px_#ef4444,0_0_12px_#f97316] transition-all duration-100 pointer-events-none"
+                  className="absolute top-0 bottom-0 w-0.5 bg-red-500 shadow-[0_0_8px_#ef4444,0_0_14px_#f97316] transition-all duration-100 pointer-events-none z-10"
                   style={{ left: `${progress}%` }}
                 >
-                  <div className="absolute -top-0.5 -left-1 size-2.5 rounded-full bg-red-400 border border-amber-300 shadow" />
-                  <div className="absolute -bottom-0.5 -left-1 size-2.5 rounded-full bg-red-400 border border-amber-300 shadow" />
+                  <div className="absolute -top-0.5 -left-1 size-2.5 rounded-full bg-red-400 border border-amber-200 shadow" />
+                  <div className="absolute -bottom-0.5 -left-1 size-2.5 rounded-full bg-red-400 border border-amber-200 shadow" />
                 </div>
 
                 {/* Hover Time Tooltip */}
                 {hoverTime !== null && (
                   <div
-                    className="absolute -top-7 -translate-x-1/2 rounded-md bg-[#100803] border border-amber-600/60 px-1.5 py-0.5 font-mono-ui text-[0.62rem] text-amber-200 pointer-events-none shadow-lg"
+                    className="absolute -top-7 -translate-x-1/2 rounded-md bg-[#100803] border border-amber-600/70 px-1.5 py-0.5 font-mono-ui text-[0.62rem] text-amber-200 pointer-events-none shadow-lg z-20"
                     style={{
                       left: `${(hoverTime / (p.duration || 1)) * 100}%`,
                     }}
@@ -671,17 +688,18 @@ function Index() {
                 )}
               </div>
 
-              {/* Digital Nixie-style Time Counters */}
-              <div className="flex justify-between font-mono-ui text-[0.65rem] text-amber-400/70 px-1">
+              {/* Digital Nixie Counters & VU Meter Indicator */}
+              <div className="flex items-center justify-between font-mono-ui text-[0.65rem] text-amber-400/80 px-1">
                 <span>{fmt(p.time)}</span>
-                <span className="text-[0.58rem] tracking-wider text-amber-600/60">
-                  {p.playing ? "RECEIVING SIGNAL" : "TUNER PAUSED"}
-                </span>
+                <div className="flex items-center gap-1.5 text-[0.58rem] tracking-wider text-amber-500/80">
+                  <Activity className={`size-3 text-amber-400 ${p.playing ? "animate-pulse text-amber-300" : "opacity-40"}`} />
+                  <span>{p.playing ? "SIGNAL LOCKED • ON AIR" : "TUNER PAUSED"}</span>
+                </div>
                 <span>{fmt(p.duration)}</span>
               </div>
             </div>
 
-            {/* 4. Controls Cluster: Vintage Pushbuttons & Rotary Volume Knob */}
+            {/* 4. Controls Cluster: Vintage Mechanical Pushbuttons & Rotary Knob */}
             <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
               {/* Shuffle Toggle Button with Jeweled Indicator Lamp */}
               <button
@@ -690,13 +708,13 @@ function Index() {
                 aria-label="Shuffle"
                 className={`retro-pushbutton relative rounded-xl p-2 transition-all cursor-pointer ${
                   p.shuffle
-                    ? "text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.4)]"
+                    ? "text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.5)]"
                     : "text-amber-400/50 hover:text-amber-200"
                 }`}
               >
                 <Shuffle className="size-3.5 sm:size-4" />
                 {p.shuffle && (
-                  <span className="absolute top-1 right-1 size-1 rounded-full bg-emerald-400 shadow-[0_0_4px_#34d399]" />
+                  <span className="absolute top-1 right-1 size-1 rounded-full bg-emerald-400 shadow-[0_0_5px_#34d399]" />
                 )}
               </button>
 
@@ -713,20 +731,20 @@ function Index() {
                 aria-label="Repeat mode"
                 className={`retro-pushbutton relative rounded-xl p-2 transition-all cursor-pointer ${
                   p.repeatMode !== "off"
-                    ? "text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.4)]"
+                    ? "text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.5)]"
                     : "text-amber-400/50 hover:text-amber-200"
                 }`}
               >
                 {p.repeatMode === "one" ? (
-                  <Repeat1 className="size-3.5 sm:size-4 text-amber-400" />
+                  <Repeat1 className="size-3.5 sm:size-4 text-amber-300" />
                 ) : (
                   <Repeat className="size-3.5 sm:size-4" />
                 )}
                 {p.repeatMode === "all" && (
-                  <span className="absolute top-1 right-1 size-1 rounded-full bg-amber-400 shadow-[0_0_4px_#f59e0b]" />
+                  <span className="absolute top-1 right-1 size-1.5 rounded-full bg-amber-400 shadow-[0_0_5px_#f59e0b]" />
                 )}
                 {p.repeatMode === "one" && (
-                  <span className="absolute top-1 right-1 size-1 rounded-full bg-red-400 shadow-[0_0_4px_#f87171]" />
+                  <span className="absolute top-1 right-1 size-1.5 rounded-full bg-red-400 shadow-[0_0_5px_#f87171]" />
                 )}
               </button>
 
@@ -785,7 +803,7 @@ function Index() {
                     className="absolute size-full rounded-full transition-transform duration-75 pointer-events-none"
                     style={{ transform: `rotate(${knobAngle}deg)` }}
                   >
-                    <div className="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-3 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
+                    <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-1 h-3 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
                   </div>
 
                   {/* Center Brass Cap / Mute Clicker */}
@@ -807,7 +825,7 @@ function Index() {
                 </div>
 
                 {/* Dial Markings below */}
-                <div className="mt-0.5 flex justify-between w-full text-[0.52rem] font-mono-ui text-amber-500/60 px-0.5">
+                <div className="mt-0.5 flex justify-between w-full text-[0.52rem] font-mono-ui text-amber-500/70 px-0.5 font-bold">
                   <span>0</span>
                   <span>VOL</span>
                   <span>10</span>
@@ -852,7 +870,7 @@ function Index() {
                 aria-label="Toggle queue"
                 className={`retro-pushbutton relative rounded-xl p-2 transition-all cursor-pointer ${
                   queueOpen
-                    ? "text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.4)]"
+                    ? "text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.5)]"
                     : "text-amber-400/60 hover:text-amber-100"
                 }`}
               >
