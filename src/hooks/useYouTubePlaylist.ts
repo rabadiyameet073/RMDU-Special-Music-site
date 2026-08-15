@@ -115,9 +115,17 @@ export function useYouTubePlaylist() {
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(0);
-  const [tracks, setTracks] = useState<Track[]>([]);
+  const [tracks, setTracks] = useState<Track[]>([
+    {
+      videoId: "W_jLgW3t3hY",
+      title: "Asfar Hussain | Nahin Milta",
+      author: "Walnut Studios",
+      thumbnail: "https://i.ytimg.com/vi/W_jLgW3t3hY/hqdefault.jpg",
+      duration: 282,
+    },
+  ]);
   const [time, setTime] = useState(0);
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(282);
   const [muted, setMuted] = useState(false);
   const [volume, setVolumeState] = useState(100);
   const [shuffle, setShuffle] = useState(false);

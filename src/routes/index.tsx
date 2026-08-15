@@ -100,7 +100,7 @@ function Index() {
   const knobRef = useRef<HTMLDivElement | null>(null);
 
   const progress = p.duration ? (p.time / p.duration) * 100 : 0;
-  const currentCover = p.current?.thumbnail;
+  const currentCover = p.current?.thumbnail || p.tracks[0]?.thumbnail;
 
   useEffect(() => {
     if (queueOpen) {
@@ -197,13 +197,15 @@ function Index() {
         alt="Illustration backdrop"
         width={1920}
         height={1088}
-        className="absolute inset-0 size-full object-cover transition-opacity duration-1000"
+        className={`absolute inset-0 size-full object-cover transition-opacity duration-1000 ${
+          currentCover ? "opacity-30" : "opacity-100"
+        }`}
       />
 
       {/* Background Layer 2: Dynamic Song Banner Ambient Backdrop with High-Fidelity Glow */}
       {currentCover && (
         <div
-          className="absolute inset-0 size-full bg-cover bg-center transition-all duration-1000 transform scale-110 filter blur-3xl opacity-65 animate-ambient-glow"
+          className="absolute inset-0 size-full bg-cover bg-center transition-all duration-1000 transform scale-110 filter blur-3xl opacity-75 animate-ambient-glow"
           style={{ backgroundImage: `url(${currentCover})` }}
         />
       )}
