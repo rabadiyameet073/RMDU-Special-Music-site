@@ -46,13 +46,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "RMDU Special: an authentic vintage worksite radio with analog rotary volume dials, radio frequency tuning scale, custom queue, and dynamic album artwork.",
+          "RMDU Special: an authentic vintage worksite radio with analog rotary volume dials, radio frequency tuning scale, custom queue, and dynamic song banner backgrounds.",
       },
       { property: "og:title", content: "RMDU Special — Vintage Worksite Radio" },
       {
         property: "og:description",
         content:
-          "Classic analog radio controls, rotary volume dial, frequency tuning seeker, and custom music queue.",
+          "Classic analog radio controls, rotary volume dial, frequency tuning seeker, and custom music queue with dynamic banner artwork.",
       },
       { property: "og:type", content: "music.playlist" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -155,12 +155,9 @@ function Index() {
       const centerY = rect.top + rect.height / 2;
       const dx = e.clientX - centerX;
       const dy = e.clientY - centerY;
-      // Angle in degrees from top (0 deg is top, positive clockwise)
       let angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
       if (angle < 0) angle += 360;
 
-      // Map range [225 to 360] -> [0 to 50%] and [0 to 135] -> [50% to 100%]
-      // Or simple relative angle clamped from -135deg (min) to +135deg (max)
       let normalized = 0;
       if (angle >= 225 && angle <= 360) {
         normalized = (angle - 225) / 270;
@@ -193,7 +190,7 @@ function Index() {
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#140c06] font-body select-none">
-      {/* Background Layer: Default Art */}
+      {/* Background Layer 1: Default Illustration */}
       <img
         src={bgArt}
         alt="Illustration backdrop"
@@ -202,10 +199,10 @@ function Index() {
         className="absolute inset-0 size-full object-cover transition-opacity duration-1000"
       />
 
-      {/* Dynamic Song Banner Ambient Background */}
+      {/* Background Layer 2: Dynamic Song Banner Ambient Backdrop with High-Fidelity Glow */}
       {currentCover && (
         <div
-          className="absolute inset-0 size-full bg-cover bg-center transition-all duration-1000 transform scale-105 filter blur-3xl opacity-60 animate-ambient-glow"
+          className="absolute inset-0 size-full bg-cover bg-center transition-all duration-1000 transform scale-110 filter blur-3xl opacity-65 animate-ambient-glow"
           style={{ backgroundImage: `url(${currentCover})` }}
         />
       )}
@@ -276,7 +273,7 @@ function Index() {
         <div className="relative group">
           {currentCover && (
             <div
-              className="absolute -inset-8 rounded-full bg-cover bg-center filter blur-3xl opacity-40 group-hover:opacity-65 transition-opacity duration-700 pointer-events-none"
+              className="absolute -inset-8 rounded-full bg-cover bg-center filter blur-3xl opacity-45 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none"
               style={{ backgroundImage: `url(${currentCover})` }}
             />
           )}
@@ -302,7 +299,7 @@ function Index() {
           )}
           <button
             onClick={() => setQueueOpen(true)}
-            className="px-3.5 py-1 rounded-lg bg-amber-600/30 hover:bg-amber-600/40 border border-amber-500/50 text-amber-100 font-semibold transition-all inline-flex items-center gap-1.5 shadow-sm active:scale-95"
+            className="px-3.5 py-1 rounded-lg bg-amber-600/30 hover:bg-amber-600/40 border border-amber-500/50 text-amber-100 font-semibold transition-all inline-flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
           >
             <ListMusic className="size-3.5 text-amber-400" />
             Station Queue
@@ -328,7 +325,7 @@ function Index() {
           <button
             onClick={() => setEmbedOpen(false)}
             aria-label="Close video player"
-            className="rounded-lg p-1 text-amber-300/60 transition-colors hover:bg-white/10 hover:text-amber-100"
+            className="rounded-lg p-1 text-amber-300/60 transition-colors hover:bg-white/10 hover:text-amber-100 cursor-pointer"
           >
             <X className="size-4" />
           </button>
@@ -341,9 +338,9 @@ function Index() {
         </div>
       </section>
 
-      {/* Playlist Queue Drawer */}
+      {/* Playlist Queue Drawer with Dynamic Song Banner Cards */}
       <section
-        className={`absolute bottom-36 left-1/2 z-30 w-[min(94vw,42rem)] -translate-x-1/2 rounded-3xl border-2 border-amber-700/40 bg-[#1e130b]/95 shadow-[0_24px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 flex flex-col ${
+        className={`absolute bottom-36 left-1/2 z-30 w-[min(94vw,44rem)] -translate-x-1/2 rounded-3xl border-2 border-amber-700/40 bg-[#1e130b]/95 shadow-[0_24px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 flex flex-col ${
           queueOpen
             ? "pointer-events-auto translate-y-0 opacity-100 scale-100"
             : "pointer-events-none translate-y-6 opacity-0 scale-95"
@@ -354,7 +351,7 @@ function Index() {
           <div className="flex items-center gap-2.5">
             <ListMusic className="size-4 text-amber-500" />
             <span className="font-mono-ui text-xs uppercase tracking-[0.18em] text-amber-100 font-bold">
-              Radio Queue ({total})
+              Radio Playlist Queue ({total})
             </span>
           </div>
 
@@ -362,7 +359,7 @@ function Index() {
             <button
               onClick={() => setAddOpen((v) => !v)}
               title="Add song to queue"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-mono-ui font-semibold border border-amber-700/50 bg-amber-900/30 hover:bg-amber-900/60 transition-colors text-amber-100"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-mono-ui font-semibold border border-amber-700/50 bg-amber-900/30 hover:bg-amber-900/60 transition-colors text-amber-100 cursor-pointer"
             >
               <Plus className="size-3.5 text-amber-400" />
               Add Track
@@ -370,14 +367,14 @@ function Index() {
             <button
               onClick={p.resetQueue}
               title="Reset queue to original playlist"
-              className="p-1.5 rounded-lg text-amber-300/60 hover:text-amber-100 hover:bg-white/10 transition-colors"
+              className="p-1.5 rounded-lg text-amber-300/60 hover:text-amber-100 hover:bg-white/10 transition-colors cursor-pointer"
             >
               <RotateCcw className="size-3.5" />
             </button>
             <button
               onClick={p.clearQueue}
               title="Clear entire queue"
-              className="p-1.5 rounded-lg text-amber-300/60 hover:text-destructive hover:bg-destructive/15 transition-colors"
+              className="p-1.5 rounded-lg text-amber-300/60 hover:text-destructive hover:bg-destructive/15 transition-colors cursor-pointer"
             >
               <Trash2 className="size-3.5" />
             </button>
@@ -385,7 +382,7 @@ function Index() {
             <button
               onClick={() => setQueueOpen(false)}
               aria-label="Close queue"
-              className="p-1.5 rounded-lg text-amber-300/60 hover:text-amber-100 hover:bg-white/10 transition-colors"
+              className="p-1.5 rounded-lg text-amber-300/60 hover:text-amber-100 hover:bg-white/10 transition-colors cursor-pointer"
             >
               <X className="size-4" />
             </button>
@@ -408,7 +405,7 @@ function Index() {
               />
               <button
                 type="submit"
-                className="px-4 py-1.5 rounded-xl bg-amber-600 text-black font-mono-ui text-xs font-bold hover:bg-amber-500 transition-colors shrink-0 shadow"
+                className="px-4 py-1.5 rounded-xl bg-amber-600 text-black font-mono-ui text-xs font-bold hover:bg-amber-500 transition-colors shrink-0 shadow cursor-pointer"
               >
                 Add
               </button>
@@ -417,15 +414,15 @@ function Index() {
           </form>
         )}
 
-        {/* Queue Items List */}
-        <div className="max-h-[50vh] overflow-y-auto p-3 space-y-2">
+        {/* Queue Items List with Rich Song Banner Backgrounds */}
+        <div className="max-h-[52vh] overflow-y-auto p-3 space-y-2.5">
           {p.tracks.length === 0 && (
             <div className="py-12 text-center text-amber-300/50">
               <Music className="size-8 mx-auto mb-2 opacity-40" />
               <p className="text-sm">Queue is empty</p>
               <button
                 onClick={p.resetQueue}
-                className="mt-3 text-xs text-amber-400 underline underline-offset-4 hover:opacity-80"
+                className="mt-3 text-xs text-amber-400 underline underline-offset-4 hover:opacity-80 cursor-pointer"
               >
                 Restore default RMDU playlist
               </button>
@@ -442,42 +439,46 @@ function Index() {
                 onDragStart={() => handleDragStart(i)}
                 onDragOver={(e) => handleDragOver(e, i)}
                 onDragEnd={handleDragEnd}
-                className={`group relative flex items-center gap-3 rounded-2xl p-2 transition-all duration-200 border overflow-hidden ${
+                className={`group relative flex items-center gap-3.5 rounded-2xl p-2.5 transition-all duration-200 border overflow-hidden ${
                   active
-                    ? "border-amber-500/80 bg-amber-500/15 shadow-[0_0_20px_rgba(245,158,11,0.2)]"
-                    : "border-amber-900/30 hover:border-amber-700/60 bg-[#160c06]/60 hover:bg-[#1f1109]"
-                } ${draggedIndex === i ? "opacity-40 scale-[0.98]" : ""}`}
+                    ? "border-amber-500/90 bg-amber-500/20 shadow-[0_0_25px_rgba(245,158,11,0.25)] ring-1 ring-amber-400/40"
+                    : "border-amber-900/40 hover:border-amber-700/70 bg-[#160c06]/80 hover:bg-[#22130a]"
+                } ${draggedIndex === i ? "opacity-35 scale-[0.98]" : ""}`}
               >
-                {/* Song Banner Background Inside Card */}
+                {/* 🌟 Song Banner Background on Every Song Card 🌟 */}
                 {t.thumbnail && (
                   <div
-                    className="absolute inset-0 bg-cover bg-center opacity-15 filter blur-sm pointer-events-none group-hover:opacity-25 transition-opacity"
+                    className={`absolute inset-0 bg-cover bg-center transition-all duration-300 pointer-events-none ${
+                      active
+                        ? "opacity-30 filter blur-xs scale-105"
+                        : "opacity-15 filter blur-sm group-hover:opacity-25 group-hover:scale-102"
+                    }`}
                     style={{ backgroundImage: `url(${t.thumbnail})` }}
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#140c06]/95 via-[#140c06]/75 to-[#140c06]/95 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#140c06]/95 via-[#140c06]/80 to-[#140c06]/95 pointer-events-none" />
 
                 {/* Drag Handle */}
                 <div
                   className="relative z-10 cursor-grab active:cursor-grabbing text-amber-600/50 hover:text-amber-300 transition-colors p-1"
-                  title="Drag to rearrange"
+                  title="Drag to rearrange queue"
                 >
-                  <GripVertical className="size-3.5" />
+                  <GripVertical className="size-4" />
                 </div>
 
-                {/* Song Banner Thumbnail */}
+                {/* Song Banner Thumbnail with Live Equalizer */}
                 <button
                   type="button"
                   onClick={() => p.playAt(i)}
-                  className="relative z-10 size-12 shrink-0 rounded-xl overflow-hidden bg-black/60 border border-amber-800/60 group-hover:ring-1 group-hover:ring-amber-500/60 transition-all text-left shadow"
+                  className="relative z-10 size-14 shrink-0 rounded-xl overflow-hidden bg-black/70 border border-amber-800/70 group-hover:ring-2 group-hover:ring-amber-500/70 transition-all text-left shadow cursor-pointer"
                 >
                   <img
                     src={t.thumbnail}
-                    alt=""
-                    className="size-full object-cover group-hover:scale-105 transition-transform"
+                    alt={t.title}
+                    className="size-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
                   {active && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-0.5">
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-0.5 backdrop-blur-[1px]">
                       <span className="w-1 bg-amber-400 rounded-full animate-eq-1" />
                       <span className="w-1 bg-amber-200 rounded-full animate-eq-2" />
                       <span className="w-1 bg-amber-400 rounded-full animate-eq-3" />
@@ -489,22 +490,22 @@ function Index() {
                 <button
                   type="button"
                   onClick={() => p.playAt(i)}
-                  className="relative z-10 min-w-0 flex-1 text-left"
+                  className="relative z-10 min-w-0 flex-1 text-left cursor-pointer"
                 >
                   <p
                     className={`truncate text-xs sm:text-sm font-medium ${
-                      active ? "text-amber-200 font-bold" : "text-amber-100/90"
+                      active ? "text-amber-200 font-bold" : "text-amber-100"
                     }`}
                   >
                     {t.title}
                   </p>
-                  <p className="truncate text-[0.7rem] text-amber-400/60">
+                  <p className="truncate text-[0.72rem] text-amber-400/70 font-mono-ui">
                     {t.author}
                   </p>
                 </button>
 
                 {/* Duration */}
-                <span className="relative z-10 shrink-0 font-mono-ui text-[0.7rem] text-amber-300/60">
+                <span className="relative z-10 shrink-0 font-mono-ui text-[0.72rem] text-amber-300/70 font-medium">
                   {t.duration ? fmt(t.duration) : "--:--"}
                 </span>
 
@@ -516,7 +517,7 @@ function Index() {
                       disabled={i === 0}
                       onClick={() => p.moveTrack(i, i - 1)}
                       title="Move up"
-                      className="p-1 rounded text-amber-500/60 hover:text-amber-200 disabled:opacity-20 transition-colors"
+                      className="p-1 rounded text-amber-500/60 hover:text-amber-200 disabled:opacity-20 transition-colors cursor-pointer"
                     >
                       <ChevronUp className="size-3.5" />
                     </button>
@@ -525,7 +526,7 @@ function Index() {
                       disabled={i === p.tracks.length - 1}
                       onClick={() => p.moveTrack(i, i + 1)}
                       title="Move down"
-                      className="p-1 rounded text-amber-500/60 hover:text-amber-200 disabled:opacity-20 transition-colors"
+                      className="p-1 rounded text-amber-500/60 hover:text-amber-200 disabled:opacity-20 transition-colors cursor-pointer"
                     >
                       <ChevronDown className="size-3.5" />
                     </button>
@@ -535,7 +536,7 @@ function Index() {
                     type="button"
                     onClick={() => p.removeTrack(i)}
                     title="Remove from queue"
-                    className="p-1.5 rounded-lg text-amber-500/50 hover:text-destructive hover:bg-destructive/15 transition-colors"
+                    className="p-1.5 rounded-lg text-amber-500/50 hover:text-destructive hover:bg-destructive/15 transition-colors cursor-pointer"
                   >
                     <Trash2 className="size-3.5" />
                   </button>
@@ -687,7 +688,7 @@ function Index() {
                 onClick={() => p.setShuffle(!p.shuffle)}
                 title={p.shuffle ? "Shuffle: ON" : "Shuffle: OFF"}
                 aria-label="Shuffle"
-                className={`retro-pushbutton relative rounded-xl p-2 transition-all ${
+                className={`retro-pushbutton relative rounded-xl p-2 transition-all cursor-pointer ${
                   p.shuffle
                     ? "text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.4)]"
                     : "text-amber-400/50 hover:text-amber-200"
@@ -710,7 +711,7 @@ function Index() {
                       : "Loop Mode: OFF"
                 }
                 aria-label="Repeat mode"
-                className={`retro-pushbutton relative rounded-xl p-2 transition-all ${
+                className={`retro-pushbutton relative rounded-xl p-2 transition-all cursor-pointer ${
                   p.repeatMode !== "off"
                     ? "text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.4)]"
                     : "text-amber-400/50 hover:text-amber-200"
@@ -734,7 +735,7 @@ function Index() {
                 onClick={p.prev}
                 title="Previous Station"
                 aria-label="Previous track"
-                className="retro-pushbutton rounded-xl p-2 text-amber-200/80 hover:text-amber-100 transition-colors"
+                className="retro-pushbutton rounded-xl p-2 text-amber-200/80 hover:text-amber-100 transition-colors cursor-pointer"
               >
                 <SkipBack className="size-3.5 sm:size-4" />
               </button>
@@ -758,7 +759,7 @@ function Index() {
                 onClick={p.next}
                 title="Next Station"
                 aria-label="Next track"
-                className="retro-pushbutton rounded-xl p-2 text-amber-200/80 hover:text-amber-100 transition-colors"
+                className="retro-pushbutton rounded-xl p-2 text-amber-200/80 hover:text-amber-100 transition-colors cursor-pointer"
               >
                 <SkipForward className="size-3.5 sm:size-4" />
               </button>
@@ -795,7 +796,7 @@ function Index() {
                       p.toggleMute();
                     }}
                     title={p.muted ? "Unmute" : "Mute (Click Center)"}
-                    className="relative z-10 size-4 sm:size-4.5 rounded-full bg-gradient-to-b from-amber-500 to-amber-700 border border-amber-300 shadow-inner flex items-center justify-center hover:scale-105 active:scale-95 transition-transform"
+                    className="relative z-10 size-4 sm:size-4.5 rounded-full bg-gradient-to-b from-amber-500 to-amber-700 border border-amber-300 shadow-inner flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer"
                   >
                     {p.muted ? (
                       <VolumeX className="size-2 text-black" />
@@ -818,7 +819,7 @@ function Index() {
                 <button
                   onClick={() => setSpeedOpen((v) => !v)}
                   title="Radio Tape Speed Selector"
-                  className="retro-pushbutton rounded-xl px-2 py-1.5 text-amber-200/80 hover:text-amber-100 font-mono-ui text-[0.65rem] font-bold"
+                  className="retro-pushbutton rounded-xl px-2 py-1.5 text-amber-200/80 hover:text-amber-100 font-mono-ui text-[0.65rem] font-bold cursor-pointer"
                 >
                   {p.playbackRate}x
                 </button>
@@ -831,7 +832,7 @@ function Index() {
                           p.setPlaybackRate(rate);
                           setSpeedOpen(false);
                         }}
-                        className={`px-2 py-1 rounded text-[0.7rem] font-mono-ui text-left transition-colors ${
+                        className={`px-2 py-1 rounded text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer ${
                           p.playbackRate === rate
                             ? "bg-amber-600 text-black font-bold"
                             : "text-amber-200 hover:bg-amber-900/40"
@@ -849,7 +850,7 @@ function Index() {
                 onClick={() => setQueueOpen((v) => !v)}
                 title="Toggle Station Queue"
                 aria-label="Toggle queue"
-                className={`retro-pushbutton relative rounded-xl p-2 transition-all ${
+                className={`retro-pushbutton relative rounded-xl p-2 transition-all cursor-pointer ${
                   queueOpen
                     ? "text-amber-200 shadow-[0_0_10px_rgba(245,158,11,0.4)]"
                     : "text-amber-400/60 hover:text-amber-100"
