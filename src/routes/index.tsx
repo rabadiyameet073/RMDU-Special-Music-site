@@ -246,34 +246,29 @@ function Index() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#0c0d10] font-body select-none">
       {/* ========================================================================= */}
-      {/* 🖼️ BACKGROUND SYSTEM: FULLSCREEN RMDU (STANDBY ONLY) vs FULLSCREEN SONG BANNER 🖼️ */}
+      {/* 🖼️ SINGLE MUTUALLY EXCLUSIVE BACKGROUND: EITHER SONG BANNER OR RMDU STANDBY 🖼️ */}
       {/* ========================================================================= */}
-
-      {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork */}
-      {/* Strictly rendered only when NO song is playing AND NO song is selected */}
-      {!isPlayingOrSelected && (
-        <div className="absolute inset-0 size-full transition-opacity duration-700 opacity-100">
+      <div className="absolute inset-0 size-full overflow-hidden">
+        {isPlayingOrSelected ? (
+          activeSongCover ? (
+            <img
+              key="active-song-cover-bg"
+              src={activeSongCover}
+              alt="Active Song Fullscreen Background"
+              className="size-full object-cover object-center"
+            />
+          ) : null
+        ) : (
           <img
+            key="rmdu-standby-bg"
             src={rmduArt}
-            alt="RMDU Special Background"
-            className="size-full object-cover object-center scale-100"
+            alt="RMDU Special Standby Background"
+            className="size-full object-cover object-center"
           />
-        </div>
-      )}
+        )}
+      </div>
 
-      {/* Layer 2: Dynamic Fullscreen Song Banner Background */}
-      {/* Rendered in 100% full screen whenever any song is selected or playing */}
-      {isPlayingOrSelected && activeSongCover && (
-        <div className="absolute inset-0 size-full transition-opacity duration-700 opacity-100">
-          <img
-            src={activeSongCover}
-            alt="Active Song Fullscreen Background"
-            className="size-full object-cover object-center scale-100"
-          />
-        </div>
-      )}
-
-      {/* Subtle Atmospheric Top & Bottom Vignettes (Keeps header and player readable over fullscreen image) */}
+      {/* Subtle Atmospheric Top & Bottom Vignettes */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/55 pointer-events-none" />
 
       {/* ========================================================================= */}
@@ -347,22 +342,39 @@ function Index() {
       </header>
 
       {/* ========================================================================= */}
-      {/* CENTER STAGE: STATION TITLE & QUICK STATS (WELL ARRANGED & SPACED) */}
+      {/* CENTER STAGE: CLEAN & UNOBSTRUCTED DURING PLAYBACK */}
       {/* ========================================================================= */}
-      <main className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center pb-32">
-        <div className="relative max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-black/60 backdrop-blur-md mb-3 shadow-lg">
-            <Zap className="size-3 text-zinc-300" />
-            <p className="font-mono-ui text-[0.68rem] uppercase tracking-[0.25em] text-zinc-300 font-semibold">
-              SOLID-STATE ALL-WAVE RADIO / RMDU SPEC-003
-            </p>
+      <main className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center pb-32 pointer-events-none">
+        {!isPlayingOrSelected ? (
+          /* Standby: RMDU Station Banner */
+          <div className="relative max-w-3xl pointer-events-auto">
+            <div className="inline-flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-black/60 backdrop-blur-md mb-3 shadow-lg">
+              <Zap className="size-3 text-zinc-300" />
+              <p className="font-mono-ui text-[0.68rem] uppercase tracking-[0.25em] text-zinc-300 font-semibold">
+                SOLID-STATE ALL-WAVE RADIO / RMDU SPEC-003
+              </p>
+            </div>
+            <h1 className="font-display text-[4.5rem] leading-[0.85] tracking-tight text-zinc-100 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] sm:text-[7.5rem] lg:text-[10rem]">
+              RMDU SPECIAL
+            </h1>
           </div>
-          <h1 className="font-display text-[4.5rem] leading-[0.85] tracking-tight text-zinc-100 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] sm:text-[7.5rem] lg:text-[10rem]">
-            RMDU SPECIAL
-          </h1>
-        </div>
+        ) : (
+          /* Song Playing / Selected: Sleek Unobtrusive Title Plate (Leaves full artwork 100% visible) */
+          <div className="relative max-w-2xl pointer-events-auto">
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 border border-[#3d2f20] bg-black/75 backdrop-blur-md shadow-2xl">
+              <Radio className="size-3.5 text-emerald-400 animate-pulse shrink-0" />
+              <span className="text-sm sm:text-base font-bold text-amber-100 truncate max-w-[220px] sm:max-w-md">
+                {p.current?.title}
+              </span>
+              <span className="text-zinc-500 font-mono-ui text-xs">•</span>
+              <span className="text-xs text-amber-300/80 font-mono-ui truncate max-w-[140px]">
+                {p.current?.author}
+              </span>
+            </div>
+          </div>
+        )}
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-300 font-mono-ui">
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-300 font-mono-ui pointer-events-auto">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-[#2e3340] bg-black/60 backdrop-blur-md text-zinc-300">
             <Disc3 className="size-3 text-zinc-400" />
             {total} TRACKS
