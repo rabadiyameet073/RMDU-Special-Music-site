@@ -117,7 +117,9 @@ function Index() {
   const knobRef = useRef<HTMLDivElement | null>(null);
 
   const progress = p.duration ? (p.time / p.duration) * 100 : 0;
-  const currentCover = p.current?.thumbnail || p.tracks[0]?.thumbnail;
+  const isPlayingOrSelected = Boolean(p.playing || p.current);
+  const activeSongCover = p.current?.thumbnail || (p.current?.id ? `https://i.ytimg.com/vi/${p.current.id}/maxresdefault.jpg` : null);
+  const currentCover = activeSongCover || p.tracks[0]?.thumbnail;
 
   useEffect(() => {
     if (queueOpen) {
@@ -208,11 +210,10 @@ function Index() {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isKnobDragging, p]);
+  }, [isKnobDragging]);
 
-  // 3D Radio Orbit Dragging System
+  // 3D Radio Orbit Drag Handling
   const handle3DMouseDown = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).closest('button, input, [role="slider"], a')) return;
     setIs3DDragging(true);
     drag3DStartRef.current = { x: e.clientX, y: e.clientY, rx: rotX, ry: rotY };
   };
@@ -245,31 +246,27 @@ function Index() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#0c0d10] font-body select-none">
       {/* ========================================================================= */}
-      {/* 🖼️ BACKGROUND SYSTEM: FULLSCREEN RMDU (STANDBY) vs FULLSCREEN SONG BANNER (PLAYING) 🖼️ */}
+      {/* 🖼️ BACKGROUND SYSTEM: FULLSCREEN RMDU (STANDBY ONLY) vs FULLSCREEN SONG BANNER 🖼️ */}
       {/* ========================================================================= */}
 
-      {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork (Hidden when playing) */}
-      <div
-        className={`absolute inset-0 size-full transition-opacity duration-700 ${
-          p.playing && currentCover ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
-      >
-        <img
-          src={rmduArt}
-          alt="RMDU Special Background"
-          className="size-full object-cover object-center scale-100"
-        />
-      </div>
-
-      {/* Layer 2: Dynamic Fullscreen Song Banner Background (Active & Fullscreen during playback) */}
-      {currentCover && (
-        <div
-          className={`absolute inset-0 size-full transition-opacity duration-700 ${
-            p.playing ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        >
+      {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork */}
+      {/* Strictly rendered only when NO song is playing AND NO song is selected */}
+      {!isPlayingOrSelected && (
+        <div className="absolute inset-0 size-full transition-opacity duration-700 opacity-100">
           <img
-            src={currentCover}
+            src={rmduArt}
+            alt="RMDU Special Background"
+            className="size-full object-cover object-center scale-100"
+          />
+        </div>
+      )}
+
+      {/* Layer 2: Dynamic Fullscreen Song Banner Background */}
+      {/* Rendered in 100% full screen whenever any song is selected or playing */}
+      {isPlayingOrSelected && activeSongCover && (
+        <div className="absolute inset-0 size-full transition-opacity duration-700 opacity-100">
+          <img
+            src={activeSongCover}
             alt="Active Song Fullscreen Background"
             className="size-full object-cover object-center scale-100"
           />
