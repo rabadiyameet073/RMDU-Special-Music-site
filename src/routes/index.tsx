@@ -244,45 +244,39 @@ function Index() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#0c0d10] font-body select-none">
       {/* ========================================================================= */}
-      {/* 🖼️ BACKGROUND SYSTEM: CRISP FULL-SIZE ARTWORK & DYNAMIC MUSIC BACKDROP 🖼️ */}
+      {/* 🖼️ BACKGROUND SYSTEM: CLEAR & VISIBLE ARTWORK DURING PLAYBACK 🖼️ */}
       {/* ========================================================================= */}
 
       {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork */}
       <div
         className={`absolute inset-0 size-full flex items-center justify-center transition-all duration-700 ${
-          p.playing && currentCover ? "opacity-30" : "opacity-100"
+          p.playing && currentCover ? "opacity-40" : "opacity-100"
         }`}
       >
         <img
           src={rmduArt}
           alt="RMDU Special Background"
-          className="size-full object-cover object-center scale-100 transition-transform duration-1000"
+          className="size-full object-cover object-center scale-100"
         />
       </div>
 
-      {/* Layer 2: Dynamic Full-Screen Song Banner Ambient Backdrop (Active when Playing) */}
+      {/* Layer 2: Dynamic Full-Screen Song Banner (Sharp & Clearly Visible without heavy blur) */}
       {currentCover && (
         <div
-          className={`absolute inset-0 size-full flex items-center justify-center transition-all duration-700 ${
-            p.playing ? "opacity-90" : "opacity-0 pointer-events-none"
+          className={`absolute inset-0 size-full transition-all duration-700 ${
+            p.playing ? "opacity-80" : "opacity-0 pointer-events-none"
           }`}
         >
-          {/* Ambient blurred backdrop for widescreen filling */}
-          <div
-            className="absolute inset-0 size-full bg-cover bg-center filter blur-lg opacity-40 scale-105"
-            style={{ backgroundImage: `url(${currentCover})` }}
-          />
-          {/* Main High-Res Cover Art Image centered and sharp */}
           <img
             src={currentCover}
-            alt="Song Banner"
-            className="relative max-h-[85vh] max-w-[90vw] object-contain shadow-2xl transition-transform duration-700"
+            alt="Song Background Banner"
+            className="size-full object-cover object-center"
           />
         </div>
       )}
 
-      {/* Subtle Atmospheric Top & Bottom Vignettes (Keeps text legible while artwork stays crystal clear) */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/75 pointer-events-none" />
+      {/* Subtle Atmospheric Top & Bottom Vignettes (Gentle tint so text is readable while image is clearly seen) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/55 pointer-events-none" />
 
       {/* ========================================================================= */}
       {/* TOP HEADER BAR: STATION STATUS & 3D RADIO VIEW BUTTON */}
