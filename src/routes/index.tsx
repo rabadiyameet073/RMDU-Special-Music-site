@@ -244,39 +244,50 @@ function Index() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#0c0d10] font-body select-none">
       {/* ========================================================================= */}
-      {/* BACKGROUND SYSTEM: FULLSCREEN RMDU.JPG WHEN IDLE vs DYNAMIC SONG BANNER */}
+      {/* 🖼️ BACKGROUND SYSTEM: CRISP FULL-SIZE ARTWORK & DYNAMIC MUSIC BACKDROP 🖼️ */}
       {/* ========================================================================= */}
 
       {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork */}
       <div
-        className={`absolute inset-0 size-full transition-all duration-700 ${
-          p.playing ? "opacity-20 filter blur-md" : "opacity-100"
+        className={`absolute inset-0 size-full flex items-center justify-center transition-all duration-700 ${
+          p.playing && currentCover ? "opacity-30" : "opacity-100"
         }`}
       >
         <img
           src={rmduArt}
           alt="RMDU Special Background"
-          className="size-full object-cover object-center"
+          className="size-full object-cover object-center scale-100 transition-transform duration-1000"
         />
       </div>
 
       {/* Layer 2: Dynamic Full-Screen Song Banner Ambient Backdrop (Active when Playing) */}
       {currentCover && (
         <div
-          className={`absolute inset-0 size-full bg-cover bg-center transition-all duration-700 ${
-            p.playing ? "opacity-65 filter blur-xl" : "opacity-0"
+          className={`absolute inset-0 size-full flex items-center justify-center transition-all duration-700 ${
+            p.playing ? "opacity-90" : "opacity-0 pointer-events-none"
           }`}
-          style={{ backgroundImage: `url(${currentCover})` }}
-        />
+        >
+          {/* Ambient blurred backdrop for widescreen filling */}
+          <div
+            className="absolute inset-0 size-full bg-cover bg-center filter blur-lg opacity-40 scale-105"
+            style={{ backgroundImage: `url(${currentCover})` }}
+          />
+          {/* Main High-Res Cover Art Image centered and sharp */}
+          <img
+            src={currentCover}
+            alt="Song Banner"
+            className="relative max-h-[85vh] max-w-[90vw] object-contain shadow-2xl transition-transform duration-700"
+          />
+        </div>
       )}
 
-      {/* Solid Dark Atmosphere Overlays (No Gradients) */}
-      <div className="absolute inset-0 bg-[#0c0d10]/75 pointer-events-none" />
+      {/* Subtle Atmospheric Top & Bottom Vignettes (Keeps text legible while artwork stays crystal clear) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/75 pointer-events-none" />
 
       {/* ========================================================================= */}
       {/* TOP HEADER BAR: STATION STATUS & 3D RADIO VIEW BUTTON */}
       {/* ========================================================================= */}
-      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between border-b border-[#282c35] bg-[#111317]/90 px-5 py-2.5 text-xs text-zinc-300 backdrop-blur-md">
+      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between border-b border-[#282c35]/80 bg-[#111317]/85 px-5 py-2.5 text-xs text-zinc-300 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <span className="font-mono-ui tabular-nums font-semibold tracking-wider text-zinc-200">
             {clock}
@@ -296,7 +307,7 @@ function Index() {
 
         {/* Current Song Marquee Badge */}
         {p.current && (
-          <div className="hidden md:flex items-center gap-2 max-w-sm px-3 py-1 border border-[#2e3340] bg-[#161820]">
+          <div className="hidden md:flex items-center gap-2 max-w-sm px-3 py-1 border border-[#2e3340] bg-[#161820]/90 backdrop-blur-sm">
             <Radio className="size-3 text-emerald-400" />
             <span className="truncate text-xs text-zinc-100 font-medium">
               {p.current.title}
@@ -341,42 +352,42 @@ function Index() {
       </header>
 
       {/* ========================================================================= */}
-      {/* CENTER STAGE: STATION TITLE & QUICK STATS */}
+      {/* CENTER STAGE: STATION TITLE & QUICK STATS (WELL ARRANGED & SPACED) */}
       {/* ========================================================================= */}
-      <main className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center pb-28">
-        <div className="relative">
-          <div className="inline-flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-[#111317]/95 mb-3 shadow-md">
+      <main className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center pb-32">
+        <div className="relative max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-black/60 backdrop-blur-md mb-3 shadow-lg">
             <Zap className="size-3 text-zinc-300" />
             <p className="font-mono-ui text-[0.68rem] uppercase tracking-[0.25em] text-zinc-300 font-semibold">
               SOLID-STATE ALL-WAVE RADIO / RMDU SPEC-003
             </p>
           </div>
-          <h1 className="font-display text-[4.5rem] leading-[0.85] tracking-tight text-zinc-100 sm:text-[7.5rem] lg:text-[10rem]">
+          <h1 className="font-display text-[4.5rem] leading-[0.85] tracking-tight text-zinc-100 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] sm:text-[7.5rem] lg:text-[10rem]">
             RMDU SPECIAL
           </h1>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-300 font-mono-ui">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-[#2e3340] bg-[#14161d] text-zinc-300">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-[#2e3340] bg-black/60 backdrop-blur-md text-zinc-300">
             <Disc3 className="size-3 text-zinc-400" />
             {total} TRACKS
           </span>
           {totalDuration > 0 && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-[#2e3340] bg-[#14161d] text-zinc-300">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-[#2e3340] bg-black/60 backdrop-blur-md text-zinc-300">
               <Clock className="size-3 text-zinc-400" />
               {fmt(totalDuration)} DURATION
             </span>
           )}
           <button
             onClick={() => setQueueOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#1e222b] hover:bg-[#272c38] border border-[#3d4454] text-zinc-100 font-semibold transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#1e222b]/90 hover:bg-[#272c38] border border-[#3d4454] text-zinc-100 font-semibold transition-colors cursor-pointer backdrop-blur-md"
           >
             <ListMusic className="size-3.5 text-zinc-300" />
             QUEUE [{total}]
           </button>
           <button
             onClick={() => setThreeDOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#2b1f14] hover:bg-[#3d2f20] border border-[#78350f] text-amber-200 font-semibold transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#2b1f14]/90 hover:bg-[#3d2f20] border border-[#78350f] text-amber-200 font-semibold transition-colors cursor-pointer backdrop-blur-md"
           >
             <Box className="size-3.5 text-amber-400" />
             INSPECT 3D
