@@ -128,6 +128,65 @@ export async function fetchMeta(videoId: string): Promise<Meta> {
   };
 }
 
+export const DEFAULT_TRACKS: Track[] = [
+  {
+    videoId: "W_jLgW3t3hY",
+    title: "Asfar Hussain | Nahin Milta (Original) | Walnut Sessions",
+    author: "Walnut Studios",
+    thumbnail: "https://i.ytimg.com/vi/W_jLgW3t3hY/maxresdefault.jpg",
+    duration: 282,
+  },
+  {
+    videoId: "gRR_nU_o3g4",
+    title: "Anuv Jain – HUSN (Official Video)",
+    author: "Anuv Jain",
+    thumbnail: "https://i.ytimg.com/vi/gRR_nU_o3g4/maxresdefault.jpg",
+    duration: 218,
+  },
+  {
+    videoId: "P037ImsySgU",
+    title: "Sahiba (Official Music Video) : Aditya Rikhari, Ankita Chhetri | T-Series",
+    author: "T-Series",
+    thumbnail: "https://i.ytimg.com/vi/P037ImsySgU/maxresdefault.jpg",
+    duration: 194,
+  },
+  {
+    videoId: "Iltsbc3NdCo",
+    title: "Anuv Jain - JO TUM MERE HO (Official Video)",
+    author: "Anuv Jain",
+    thumbnail: "https://i.ytimg.com/vi/Iltsbc3NdCo/maxresdefault.jpg",
+    duration: 252,
+  },
+  {
+    videoId: "AX6OrbgS8lI",
+    title: "Tu Hai Kahan by AUR (Official Music Video)",
+    author: "AUR",
+    thumbnail: "https://i.ytimg.com/vi/AX6OrbgS8lI/maxresdefault.jpg",
+    duration: 263,
+  },
+  {
+    videoId: "4iZ_uBf9bqw",
+    title: "Hass Hass (Official Video) - Diljit Dosanjh x Sia",
+    author: "Diljit Dosanjh",
+    thumbnail: "https://i.ytimg.com/vi/4iZ_uBf9bqw/maxresdefault.jpg",
+    duration: 154,
+  },
+  {
+    videoId: "i_Wp8v8vXhU",
+    title: "Gumaan - Young Stunners | Talha Anjum | Talhah Yunus",
+    author: "Young Stunners",
+    thumbnail: "https://i.ytimg.com/vi/i_Wp8v8vXhU/maxresdefault.jpg",
+    duration: 221,
+  },
+  {
+    videoId: "vA8OxdaPTv8",
+    title: "Alag Aasmaan - Anuv Jain",
+    author: "Anuv Jain",
+    thumbnail: "https://i.ytimg.com/vi/vA8OxdaPTv8/maxresdefault.jpg",
+    duration: 212,
+  },
+];
+
 export function extractYouTubeId(urlOrId: string): string | null {
   const trimmed = urlOrId.trim();
   if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
@@ -144,15 +203,7 @@ export function useYouTubePlaylist() {
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [index, setIndex] = useState(0);
-  const [tracks, setTracks] = useState<Track[]>([
-    {
-      videoId: "W_jLgW3t3hY",
-      title: "Asfar Hussain | Nahin Milta",
-      author: "Walnut Studios",
-      thumbnail: "https://i.ytimg.com/vi/W_jLgW3t3hY/hqdefault.jpg",
-      duration: 282,
-    },
-  ]);
+  const [tracks, setTracks] = useState<Track[]>(DEFAULT_TRACKS);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(282);
   const [muted, setMuted] = useState(false);
@@ -177,17 +228,22 @@ export function useYouTubePlaylist() {
     const p = playerRef.current;
     if (!p) return;
     const ids = p.getPlaylist() ?? [];
-    if (!ids.length) return;
+    if (!ids.length || ids.length <= 1) return;
 
     setTracks((prev) => {
       if (prev.length === ids.length && prev[0]?.videoId === ids[0]) return prev;
-      const next: Track[] = ids.map((id, i) => ({
-        videoId: id,
-        title: `Track ${i + 1}`,
-        author: "RMDU Special",
-        thumbnail: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
-        duration: 0,
-      }));
+      const next: Track[] = ids.map((id, i) => {
+        const existing = prev.find((t) => t.videoId === id);
+        return (
+          existing || {
+            videoId: id,
+            title: `Track ${i + 1}`,
+            author: "RMDU Special",
+            thumbnail: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
+            duration: 0,
+          }
+        );
+      });
 
       void (async () => {
         for (let i = 0; i < ids.length; i += 6) {
@@ -198,13 +254,13 @@ export function useYouTubePlaylist() {
             metas.forEach((m, j) => {
               const at = i + j;
               const t = copy[at];
-              if (t) {
+              if (t && m.title) {
                 copy[at] = {
                   ...t,
                   title: m.title || t.title,
                   author: m.author || t.author,
                   thumbnail:
-                    m.thumbnail_url || `https://i.ytimg.com/vi/${t.videoId}/hqdefault.jpg`,
+                    m.thumbnail_url || `https://i.ytimg.com/vi/${t.videoId}/maxresdefault.jpg`,
                 };
               }
             });
@@ -581,8 +637,13 @@ export function useYouTubePlaylist() {
   }, []);
 
   const resetQueue = useCallback(() => {
-    syncPlaylist();
-  }, [syncPlaylist]);
+    setTracks(DEFAULT_TRACKS);
+    setIndex(0);
+    const first = DEFAULT_TRACKS[0];
+    if (first && playerRef.current) {
+      playerRef.current.cueVideoById({ videoId: first.videoId, startSeconds: 0 });
+    }
+  }, []);
 
   const current = tracks[index];
 
