@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 
 import rmduArt from "@/assets/rmdu.jpg";
+import { SpaceParticleCanvas } from "@/components/SpaceParticleCanvas";
 import {
   fmt,
   PLAYLIST_ID,
@@ -531,14 +532,8 @@ function Index() {
             }}
             className="perspective-1200 relative flex-1 flex items-center justify-center cursor-grab active:cursor-grabbing overflow-hidden touch-none"
           >
-            {/* Ambient Ground Grid Plate */}
-            <div
-              className="absolute w-[800px] h-[800px] rounded-full opacity-20 pointer-events-none"
-              style={{
-                background: "radial-gradient(circle, #f59e0b 0%, transparent 70%)",
-                transform: "translateY(220px) rotateX(90deg)",
-              }}
-            />
+            {/* Deep Space & Cosmic Stars Particle Field Canvas (Inspired by Portfolio Hero) */}
+            <SpaceParticleCanvas />
 
             {/* Responsive Scale Wrapper for Mobile Devices */}
             <div className="scale-[0.68] xs:scale-[0.82] sm:scale-100 transition-transform origin-center">
