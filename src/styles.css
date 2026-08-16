@@ -141,81 +141,85 @@
 }
 
 /* ========================================================================= */
-/* 📻 VINTAGE WORKSHOP RADIO RETRO STYLING SYSTEM 📻 */
+/* 📻 VINTAGE WORKSHOP RADIO RETRO STYLING SYSTEM (SOLID/AUTHENTIC HARDWARE) 📻 */
 /* ========================================================================= */
 
 .retro-radio-body {
-  background: 
-    linear-gradient(180deg, rgba(255, 200, 120, 0.08) 0%, transparent 8%),
-    radial-gradient(ellipse at 50% 0%, #442a19 0%, #25160c 45%, #140b05 100%);
+  background-color: #131417;
   box-shadow: 
-    0 30px 70px -10px rgba(0, 0, 0, 0.95),
-    inset 0 2px 0 rgba(255, 215, 140, 0.35),
-    inset 0 -3px 0 rgba(0, 0, 0, 0.9),
-    0 0 0 2px rgba(190, 115, 45, 0.45);
+    0 24px 60px -10px rgba(0, 0, 0, 0.95),
+    0 6px 16px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.8);
+  border: 1px solid #2b2e37;
 }
 
 .retro-speaker-grille {
-  background-image: radial-gradient(#110804 35%, transparent 36%);
+  background-color: #0d0e11;
+  background-image: radial-gradient(#262932 25%, transparent 26%);
   background-size: 4px 4px;
 }
 
 .retro-tuner-glass {
-  background: radial-gradient(ellipse at center, rgba(80, 40, 10, 0.85) 0%, rgba(25, 12, 4, 0.98) 100%);
+  background-color: #090a0d;
   box-shadow:
     inset 0 3px 10px rgba(0, 0, 0, 0.95),
-    inset 0 0 20px rgba(255, 170, 50, 0.2),
-    0 1px 0 rgba(255, 255, 255, 0.1);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+  border: 1px solid #22252e;
 }
 
 .retro-knob {
-  background: conic-gradient(
-    from 0deg,
-    #2a221b 0deg,
-    #534336 45deg,
-    #1d1611 90deg,
-    #635041 135deg,
-    #2a221b 180deg,
-    #534336 225deg,
-    #1d1611 270deg,
-    #635041 315deg,
-    #2a221b 360deg
-  );
+  background-color: #272a32;
   box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.75),
-    inset 0 1px 2px rgba(255, 230, 170, 0.5),
-    inset 0 -3px 6px rgba(0, 0, 0, 0.9),
-    0 0 0 2px rgba(180, 115, 50, 0.7);
+    0 4px 10px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.8);
+  border: 1px solid #3e434f;
 }
 
 .retro-pushbutton {
-  background: linear-gradient(180deg, #463122 0%, #26190f 100%);
+  background-color: #1a1c21;
+  color: #d1d5db;
   box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.6),
-    inset 0 1px 1px rgba(255, 220, 150, 0.4),
-    inset 0 -2px 3px rgba(0, 0, 0, 0.8),
-    0 0 0 1.5px rgba(160, 95, 40, 0.5);
+    0 2px 4px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.7);
+  border: 1px solid #2c303a;
+}
+
+.retro-pushbutton:hover {
+  background-color: #22252c;
+  color: #f9fafb;
+  border-color: #3b414e;
 }
 
 .retro-pushbutton:active {
-  transform: translateY(2px);
+  transform: translateY(1.5px);
+  background-color: #14161a;
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.7),
-    inset 0 3px 6px rgba(0, 0, 0, 0.9);
+    inset 0 2px 4px rgba(0, 0, 0, 0.8),
+    0 0 0 transparent;
 }
 
 .retro-main-play {
-  background: radial-gradient(circle at 35% 30%, #ffb347 0%, #eb6f15 60%, #9e3602 100%);
+  background-color: #f3f4f6;
+  color: #111827;
   box-shadow:
-    0 6px 20px rgba(235, 111, 21, 0.65),
-    inset 0 2px 4px rgba(255, 255, 255, 0.7),
-    inset 0 -4px 8px rgba(90, 25, 0, 0.9),
-    0 0 0 3px rgba(255, 195, 95, 0.5);
+    0 4px 14px rgba(0, 0, 0, 0.7),
+    inset 0 1px 2px rgba(255, 255, 255, 1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35);
+  border: 1px solid #9ca3af;
+}
+
+.retro-main-play:hover {
+  background-color: #ffffff;
+  transform: scale(1.03);
 }
 
 .retro-main-play:active {
-  transform: scale(0.95) translateY(2px);
+  transform: translateY(1.5px) scale(0.97);
   box-shadow:
-    0 2px 8px rgba(235, 111, 21, 0.4),
-    inset 0 4px 10px rgba(0, 0, 0, 0.8);
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    inset 0 2px 6px rgba(0, 0, 0, 0.4);
 }
