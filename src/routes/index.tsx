@@ -940,8 +940,9 @@ function Index() {
                 <SkipForward className="size-3.5 sm:size-4" />
               </button>
 
-              {/* 5. Rotary Volume Dial Module */}
+              {/* 5. VINTAGE CIRCULAR YELLOW RADIO DIAL VOLUME MODULE */}
               <div className="relative flex flex-col items-center justify-center px-1">
+                {/* Vintage Circular Yellow Radio Dial Face */}
                 <div
                   ref={knobRef}
                   onMouseDown={handleKnobMouseDown}
@@ -949,17 +950,67 @@ function Index() {
                     e.preventDefault();
                     p.setVolume(p.volume + (e.deltaY < 0 ? 5 : -5));
                   }}
-                  title={`Master Volume: ${p.muted ? "MUTED" : `${p.volume}%`} (Turn or Drag)`}
-                  className="retro-knob relative size-9 sm:size-10 cursor-grab active:cursor-grabbing flex items-center justify-center select-none"
+                  title={`Master Volume: ${p.muted ? "MUTED" : `${p.volume}%`} (Turn or Drag Dial)`}
+                  className="relative size-12 sm:size-13 rounded-full bg-[#eab308] border-2 border-[#1c1917] shadow-inner flex items-center justify-center select-none cursor-grab active:cursor-grabbing overflow-hidden"
                 >
-                  <div className="absolute inset-0 border border-zinc-500/40 pointer-events-none" />
+                  {/* Outer Bezel Rim */}
+                  <div className="absolute inset-0 rounded-full border border-black/30 pointer-events-none" />
 
-                  {/* Rotating Indicator Line */}
+                  {/* Circular Dial Scale Markings (Radial Ticks & Numbers) */}
+                  <svg className="absolute inset-0 size-full pointer-events-none" viewBox="0 0 100 100">
+                    {/* Scale Arc Line */}
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="41"
+                      fill="none"
+                      stroke="#1c1917"
+                      strokeWidth="1.5"
+                      strokeDasharray="193 258"
+                      strokeDashoffset="-32"
+                    />
+                    {/* 11 Radial Scale Tick Marks */}
+                    {Array.from({ length: 11 }).map((_, i) => {
+                      const angle = -135 + i * 27;
+                      const rad = (angle - 90) * (Math.PI / 180);
+                      const isMajor = i % 2 === 0;
+                      const len = isMajor ? 7 : 4;
+                      const x1 = 50 + 41 * Math.cos(rad);
+                      const y1 = 50 + 41 * Math.sin(rad);
+                      const x2 = 50 + (41 - len) * Math.cos(rad);
+                      const y2 = 50 + (41 - len) * Math.sin(rad);
+                      return (
+                        <line
+                          key={i}
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke="#1c1917"
+                          strokeWidth={isMajor ? "2" : "1"}
+                        />
+                      );
+                    })}
+                    {/* Numbers around the yellow dial */}
+                    <text x="21" y="78" fontSize="8" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">0</text>
+                    <text x="14" y="52" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">2</text>
+                    <text x="26" y="27" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">4</text>
+                    <text x="74" y="27" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">6</text>
+                    <text x="86" y="52" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">8</text>
+                    <text x="79" y="78" fontSize="8" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">10</text>
+                    <text x="50" y="23" fontSize="6" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">VOL</text>
+                  </svg>
+
+                  {/* Central Dark Bakelite Knob with Rotating Mechanical Pointer Needle */}
                   <div
-                    className="absolute size-full transition-transform duration-75 pointer-events-none"
+                    className="relative size-6 sm:size-7 rounded-full bg-[#181a20] border-2 border-black shadow-md flex items-center justify-center transition-transform duration-75 pointer-events-none"
                     style={{ transform: `rotate(${knobAngle}deg)` }}
                   >
-                    <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-1 h-2.5 bg-zinc-200" />
+                    {/* Long Mechanical Metal Pointer Needle reaching into the Yellow Scale */}
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[2.5px] h-3.5 bg-black border-l border-zinc-600 shadow-sm" />
+                    
+                    {/* Fluted Knob Surface Grip Lines */}
+                    <div className="absolute inset-0 rounded-full border border-zinc-700/60" />
                   </div>
 
                   {/* Center Metal Cap / Mute Clicker */}
@@ -969,22 +1020,20 @@ function Index() {
                       e.stopPropagation();
                       p.toggleMute();
                     }}
-                    title={p.muted ? "Unmute" : "Mute"}
-                    className="relative z-10 size-4 bg-zinc-600 hover:bg-zinc-500 border border-zinc-400 flex items-center justify-center cursor-pointer"
+                    title={p.muted ? "Unmute Volume" : "Mute (Click Center)"}
+                    className="absolute z-10 size-3 sm:size-3.5 rounded-full bg-zinc-700 hover:bg-zinc-600 border border-zinc-400 flex items-center justify-center cursor-pointer shadow-inner"
                   >
                     {p.muted ? (
-                      <VolumeX className="size-2.5 text-zinc-950" />
+                      <VolumeX className="size-2 text-white" />
                     ) : (
-                      <div className="size-1 bg-zinc-900" />
+                      <div className="size-1 rounded-full bg-zinc-950" />
                     )}
                   </button>
                 </div>
 
-                <div className="mt-0.5 flex justify-between w-full text-[0.48rem] font-mono-ui text-zinc-400 px-0.5 font-bold">
-                  <span>0</span>
-                  <span>VOL</span>
-                  <span>10</span>
-                </div>
+                <span className="mt-0.5 text-[0.48rem] font-mono-ui text-zinc-400 font-bold uppercase tracking-wider">
+                  {p.muted ? "MUTED" : `${p.volume}%`}
+                </span>
               </div>
 
               {/* 6. Tape Speed Selector Switch */}
