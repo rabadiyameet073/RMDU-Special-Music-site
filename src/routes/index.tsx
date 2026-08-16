@@ -2,12 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
-  ArrowDownToLine,
   ArrowUpDown,
   ArrowUpRight,
   ArrowUpToLine,
   ChevronDown,
   ChevronUp,
+  Clock,
   Disc3,
   FastForward,
   GripVertical,
@@ -26,17 +26,13 @@ import {
   Shuffle,
   SkipBack,
   SkipForward,
-  Sparkles,
   Trash2,
   Tv,
-  Volume1,
-  Volume2,
   VolumeX,
   X,
   Zap,
 } from "lucide-react";
 
-import logoArt from "@/assets/logo.png";
 import rmduArt from "@/assets/rmdu.jpg";
 import {
   fmt,
@@ -50,13 +46,13 @@ const YTM_PLAYLIST = `https://music.youtube.com/playlist?list=${PLAYLIST_ID}`;
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "RMDU Special — Vintage Worksite Radio" },
+      { title: "RMDU Special — Vintage Audio Receiver" },
       {
         name: "description",
         content:
-          "RMDU Special: an authentic vintage worksite radio with analog rotary volume dials, radio frequency tuning scale, custom queue with drag & drop reordering, and dynamic song banner backgrounds.",
+          "RMDU Special: an authentic vintage industrial all-wave radio receiver with analog frequency tuner, rotary volume dial, queue manager, and live playback.",
       },
-      { property: "og:title", content: "RMDU Special — Vintage Worksite Radio" },
+      { property: "og:title", content: "RMDU Special — Vintage Audio Receiver" },
       {
         property: "og:description",
         content:
@@ -202,19 +198,18 @@ function Index() {
     };
   }, [isKnobDragging, p]);
 
-  // Volume knob angle calculation (-135deg to +135deg)
   const knobAngle = (p.muted ? 0 : p.volume / 100) * 270 - 135;
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-[#120a05] font-body select-none">
+    <div className="relative h-screen w-full overflow-hidden bg-[#0c0d10] font-body select-none">
       {/* ========================================================================= */}
-      {/* 🌟 BACKGROUND SYSTEM: FULLSCREEN RMDU.JPG WHEN IDLE vs DYNAMIC SONG BANNER WHEN PLAYING 🌟 */}
+      {/* BACKGROUND SYSTEM: FULLSCREEN RMDU.JPG WHEN IDLE vs DYNAMIC SONG BANNER */}
       {/* ========================================================================= */}
 
       {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork */}
       <div
-        className={`absolute inset-0 size-full transition-all duration-1000 ${
-          p.playing ? "opacity-20 scale-105 filter blur-md" : "opacity-100 scale-100"
+        className={`absolute inset-0 size-full transition-all duration-700 ${
+          p.playing ? "opacity-20 filter blur-md" : "opacity-100"
         }`}
       >
         <img
@@ -227,35 +222,32 @@ function Index() {
       {/* Layer 2: Dynamic Full-Screen Song Banner Ambient Backdrop (Active when Playing) */}
       {currentCover && (
         <div
-          className={`absolute inset-0 size-full bg-cover bg-center transition-all duration-1000 transform scale-105 ${
-            p.playing ? "opacity-70 filter blur-xl" : "opacity-0"
+          className={`absolute inset-0 size-full bg-cover bg-center transition-all duration-700 ${
+            p.playing ? "opacity-65 filter blur-xl" : "opacity-0"
           }`}
           style={{ backgroundImage: `url(${currentCover})` }}
         />
       )}
 
-      {/* Deep Vignette & Contrast Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0f1013]/70 via-[#0f1013]/35 to-[#0f1013]/85 pointer-events-none" />
-      <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_240px_90px_#0f1013]" />
+      {/* Solid Dark Atmosphere Overlays (No Gradients) */}
+      <div className="absolute inset-0 bg-[#0c0d10]/75 pointer-events-none" />
 
       {/* ========================================================================= */}
-      {/* 📻 TOP HEADER BAR: STATION STATUS & EXTERNAL PLAYLIST LINKS 📻 */}
+      {/* TOP HEADER BAR: STATION STATUS & EXTERNAL PLAYLIST LINKS */}
       {/* ========================================================================= */}
-      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-5 py-4 text-xs text-foreground/80">
+      <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between border-b border-[#282c35] bg-[#111317]/90 px-5 py-2.5 text-xs text-zinc-300 backdrop-blur-md">
         <div className="flex items-center gap-3">
-          <span className="font-mono-ui tabular-nums font-semibold tracking-wider text-accent drop-shadow-[0_0_8px_rgba(255,180,60,0.5)]">
+          <span className="font-mono-ui tabular-nums font-semibold tracking-wider text-zinc-200">
             {clock}
           </span>
-          <span className="h-3 w-px bg-amber-800/40" />
+          <span className="h-3 w-px bg-[#333844]" />
           <span className="flex items-center gap-2">
             <span
-              className={`size-2.5 rounded-full ring-1 ring-amber-500/40 ${
-                p.playing
-                  ? "animate-pulse bg-amber-500 shadow-[0_0_10px_#f59e0b]"
-                  : "bg-amber-950 shadow-inner"
+              className={`size-2 ${
+                p.playing ? "bg-emerald-500 animate-pulse" : "bg-zinc-700"
               }`}
             />
-            <span className="font-mono-ui uppercase tracking-widest text-[0.65rem] text-amber-200/80 font-bold">
+            <span className="font-mono-ui uppercase tracking-widest text-[0.65rem] text-zinc-300 font-bold">
               {p.playing ? "RADIO ON AIR" : "STANDBY"}
             </span>
           </span>
@@ -263,13 +255,13 @@ function Index() {
 
         {/* Current Song Marquee Badge */}
         {p.current && (
-          <div className="hidden md:flex items-center gap-2 max-w-sm px-3.5 py-1 rounded-full border border-amber-800/40 bg-black/40 shadow-inner backdrop-blur-md">
-            <Radio className="size-3 text-amber-500 animate-pulse" />
-            <span className="truncate text-xs text-amber-100 font-medium">
+          <div className="hidden md:flex items-center gap-2 max-w-sm px-3 py-1 border border-[#2e3340] bg-[#161820]">
+            <Radio className="size-3 text-emerald-400" />
+            <span className="truncate text-xs text-zinc-100 font-medium">
               {p.current.title}
             </span>
-            <span className="text-amber-700 text-[0.65rem]">•</span>
-            <span className="truncate text-[0.65rem] text-amber-300/70">
+            <span className="text-zinc-600 text-[0.65rem]">/</span>
+            <span className="truncate text-[0.65rem] text-zinc-400 font-mono-ui">
               {p.current.author}
             </span>
           </div>
@@ -280,7 +272,7 @@ function Index() {
             href={YTM_PLAYLIST}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-amber-200/70 transition-colors hover:text-amber-100 font-mono-ui text-[0.7rem]"
+            className="inline-flex items-center gap-1 text-zinc-400 transition-colors hover:text-zinc-100 font-mono-ui text-[0.7rem]"
           >
             YouTube Music
             <ArrowUpRight className="size-3" aria-hidden="true" />
@@ -289,7 +281,7 @@ function Index() {
             href={YT_PLAYLIST}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-amber-200/70 transition-colors hover:text-amber-100 font-mono-ui text-[0.7rem]"
+            className="inline-flex items-center gap-1 text-zinc-400 transition-colors hover:text-zinc-100 font-mono-ui text-[0.7rem]"
           >
             YouTube
             <ArrowUpRight className="size-3" aria-hidden="true" />
@@ -298,111 +290,107 @@ function Index() {
       </header>
 
       {/* ========================================================================= */}
-      {/* 📻 CENTER STAGE: STATION TITLE & QUICK STATS 📻 */}
+      {/* CENTER STAGE: STATION TITLE & QUICK STATS */}
       {/* ========================================================================= */}
       <main className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center pb-28">
-        <div className="relative group">
-          {currentCover && (
-            <div
-              className="absolute -inset-8 rounded-full bg-cover bg-center filter blur-3xl opacity-35 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none"
-              style={{ backgroundImage: `url(${currentCover})` }}
-            />
-          )}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-amber-700/50 bg-black/40 backdrop-blur-sm mb-3 shadow-md">
-            <Zap className="size-3 text-amber-400" />
-            <p className="font-mono-ui text-[0.7rem] uppercase tracking-[0.35em] text-accent font-semibold">
-              SOLID-STATE ALL-WAVE RADIO
+        <div className="relative">
+          <div className="inline-flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-[#111317]/95 mb-3 shadow-md">
+            <Zap className="size-3 text-zinc-300" />
+            <p className="font-mono-ui text-[0.68rem] uppercase tracking-[0.25em] text-zinc-300 font-semibold">
+              SOLID-STATE ALL-WAVE RADIO / RMDU SPEC-003
             </p>
           </div>
-          <h1 className="font-display text-[4.5rem] leading-[0.85] tracking-tight text-foreground drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)] sm:text-[7.5rem] lg:text-[10rem]">
+          <h1 className="font-display text-[4.5rem] leading-[0.85] tracking-tight text-zinc-100 sm:text-[7.5rem] lg:text-[10rem]">
             RMDU SPECIAL
           </h1>
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5 text-xs text-foreground/80 font-mono-ui">
-          <span className="px-3 py-1 rounded-lg border border-amber-900/50 bg-[#1d1209]/80 text-amber-200/90 shadow-sm">
-            📻 {total} Radio Tracks
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-300 font-mono-ui">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-[#2e3340] bg-[#14161d] text-zinc-300">
+            <Disc3 className="size-3 text-zinc-400" />
+            {total} TRACKS
           </span>
           {totalDuration > 0 && (
-            <span className="px-3 py-1 rounded-lg border border-amber-900/50 bg-[#1d1209]/80 text-amber-200/90 shadow-sm">
-              ⏱️ {fmt(totalDuration)} Total
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-[#2e3340] bg-[#14161d] text-zinc-300">
+              <Clock className="size-3 text-zinc-400" />
+              {fmt(totalDuration)} DURATION
             </span>
           )}
           <button
             onClick={() => setQueueOpen(true)}
-            className="px-3.5 py-1 rounded-lg bg-amber-600/30 hover:bg-amber-600/50 border border-amber-500/50 text-amber-100 font-semibold transition-all inline-flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#1e222b] hover:bg-[#272c38] border border-[#3d4454] text-zinc-100 font-semibold transition-colors cursor-pointer"
           >
-            <ListMusic className="size-3.5 text-amber-400" />
-            Station Queue ({total})
+            <ListMusic className="size-3.5 text-zinc-300" />
+            QUEUE [{total}]
           </button>
         </div>
       </main>
 
       {/* ========================================================================= */}
-      {/* 📺 CRT MONITOR VIDEO FEED FLOATING MODAL 📺 */}
+      {/* CRT MONITOR VIDEO FEED FLOATING MODAL */}
       {/* ========================================================================= */}
       <section
-        className={`absolute bottom-40 left-1/2 z-40 w-[min(92vw,34rem)] -translate-x-1/2 rounded-2xl border-2 border-amber-700/50 bg-[#1c120a]/95 shadow-[0_20px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 ${
+        className={`absolute bottom-36 left-1/2 z-40 w-[min(92vw,34rem)] -translate-x-1/2 border border-zinc-700 bg-[#111317] shadow-2xl transition-all duration-200 ${
           embedOpen
-            ? "pointer-events-auto translate-y-0 opacity-100 scale-100"
-            : "pointer-events-none translate-y-6 opacity-0 scale-95"
+            ? "pointer-events-auto translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-4 opacity-0"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-amber-800/40 px-4 py-2.5 bg-black/40 rounded-t-2xl">
+        <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2 bg-[#0c0d10]">
           <div className="flex items-center gap-2">
-            <Tv className="size-3.5 text-amber-500" />
-            <span className="font-mono-ui text-[0.68rem] uppercase tracking-[0.2em] text-amber-100 font-semibold">
-              CRT Monitor Feed
+            <Tv className="size-3.5 text-zinc-300" />
+            <span className="font-mono-ui text-[0.68rem] uppercase tracking-[0.2em] text-zinc-200 font-semibold">
+              CRT Monitor Feed / CH-01
             </span>
           </div>
           <button
             onClick={() => setEmbedOpen(false)}
             aria-label="Close video player"
-            className="rounded-lg p-1 text-amber-300/60 transition-colors hover:bg-white/10 hover:text-amber-100 cursor-pointer"
+            className="p-1 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white cursor-pointer"
           >
             <X className="size-4" />
           </button>
         </div>
         <div
           id="yt-player-host-wrapper"
-          className="aspect-video w-full overflow-hidden rounded-b-2xl bg-black ring-1 ring-amber-900/30"
+          className="aspect-video w-full overflow-hidden bg-black border-t border-zinc-800"
         >
           <div id="yt-player-host" className="size-full" />
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 📜 PLAYLIST QUEUE DRAWER: REARRANGE, REMOVE, SHUFFLE & BANNER CARDS 📜 */}
+      {/* PLAYLIST QUEUE DRAWER: REARRANGE, REMOVE, SHUFFLE & TRACK CARDS */}
       {/* ========================================================================= */}
       <section
-        className={`absolute bottom-40 left-1/2 z-30 w-[min(94vw,46rem)] -translate-x-1/2 rounded-3xl border-2 border-amber-700/40 bg-[#1a1007]/95 shadow-[0_24px_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl transition-all duration-300 flex flex-col ${
+        className={`absolute bottom-36 left-1/2 z-30 w-[min(94vw,46rem)] -translate-x-1/2 border border-zinc-700 bg-[#111317] shadow-2xl transition-all duration-200 flex flex-col ${
           queueOpen
-            ? "pointer-events-auto translate-y-0 opacity-100 scale-100"
-            : "pointer-events-none translate-y-6 opacity-0 scale-95"
+            ? "pointer-events-auto translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-4 opacity-0"
         }`}
       >
         {/* Queue Header & Action Bar */}
-        <div className="flex items-center justify-between border-b border-amber-800/40 px-5 py-3.5 bg-black/50 rounded-t-3xl">
+        <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5 bg-[#0c0d10]">
           <div className="flex items-center gap-2.5">
-            <ListMusic className="size-4 text-amber-500" />
-            <span className="font-mono-ui text-xs uppercase tracking-[0.18em] text-amber-100 font-bold">
-              Radio Queue ({total})
+            <ListMusic className="size-4 text-zinc-300" />
+            <span className="font-mono-ui text-xs uppercase tracking-[0.18em] text-zinc-100 font-bold">
+              Station Queue [{total}]
             </span>
             {totalDuration > 0 && (
-              <span className="hidden sm:inline font-mono-ui text-[0.7rem] text-amber-400/60">
-                • {fmt(totalDuration)} Total
+              <span className="hidden sm:inline font-mono-ui text-[0.7rem] text-zinc-400">
+                / {fmt(totalDuration)}
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1.5">
             {/* Add Track Button */}
             <button
               onClick={() => setAddOpen((v) => !v)}
               title="Add YouTube song to queue"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-mono-ui font-semibold border border-amber-700/50 bg-amber-900/40 hover:bg-amber-900/70 transition-colors text-amber-100 cursor-pointer shadow-sm"
+              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-mono-ui font-semibold border border-zinc-600 bg-[#1d2028] hover:bg-[#282c38] transition-colors text-zinc-100 cursor-pointer"
             >
-              <Plus className="size-3.5 text-amber-400" />
+              <Plus className="size-3.5 text-zinc-300" />
               Add Track
             </button>
 
@@ -410,7 +398,7 @@ function Index() {
             <button
               onClick={p.shuffleQueue}
               title="Randomize / Shuffle entire queue order"
-              className="p-1.5 rounded-lg text-amber-300/70 hover:text-amber-100 hover:bg-white/10 transition-colors cursor-pointer"
+              className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             >
               <Shuffle className="size-3.5" />
             </button>
@@ -419,7 +407,7 @@ function Index() {
             <button
               onClick={p.reverseQueue}
               title="Reverse queue order"
-              className="p-1.5 rounded-lg text-amber-300/70 hover:text-amber-100 hover:bg-white/10 transition-colors cursor-pointer"
+              className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             >
               <ArrowUpDown className="size-3.5" />
             </button>
@@ -428,7 +416,7 @@ function Index() {
             <button
               onClick={p.resetQueue}
               title="Reset queue to original playlist"
-              className="p-1.5 rounded-lg text-amber-300/70 hover:text-amber-100 hover:bg-white/10 transition-colors cursor-pointer"
+              className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             >
               <RotateCcw className="size-3.5" />
             </button>
@@ -437,18 +425,18 @@ function Index() {
             <button
               onClick={p.clearQueue}
               title="Clear all songs from queue"
-              className="p-1.5 rounded-lg text-amber-300/70 hover:text-destructive hover:bg-destructive/15 transition-colors cursor-pointer"
+              className="p-1.5 text-zinc-400 hover:text-red-400 hover:bg-red-950/40 transition-colors cursor-pointer"
             >
               <Trash2 className="size-3.5" />
             </button>
 
-            <span className="h-4 w-px bg-amber-800/40 mx-0.5" />
+            <span className="h-4 w-px bg-zinc-800 mx-0.5" />
 
             {/* Close Queue Drawer */}
             <button
               onClick={() => setQueueOpen(false)}
               aria-label="Close queue"
-              className="p-1.5 rounded-lg text-amber-300/60 hover:text-amber-100 hover:bg-white/10 transition-colors cursor-pointer"
+              className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             >
               <X className="size-4" />
             </button>
@@ -459,7 +447,7 @@ function Index() {
         {addOpen && (
           <form
             onSubmit={handleAddSong}
-            className="p-3 border-b border-amber-800/40 bg-black/40 flex flex-col gap-2"
+            className="p-3 border-b border-zinc-800 bg-[#0e1014] flex flex-col gap-2"
           >
             <div className="flex gap-2">
               <input
@@ -467,29 +455,29 @@ function Index() {
                 placeholder="Paste YouTube Link or Video ID (e.g. youtu.be/... or watch?v=...)"
                 value={newSongInput}
                 onChange={(e) => setNewSongInput(e.target.value)}
-                className="flex-1 rounded-xl border border-amber-800/80 bg-black/60 px-3.5 py-1.5 text-xs text-amber-100 placeholder:text-amber-600/60 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                className="flex-1 border border-zinc-700 bg-black px-3.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-400 font-mono-ui"
               />
               <button
                 type="submit"
                 disabled={isAdding}
-                className="px-4 py-1.5 rounded-xl bg-amber-600 text-black font-mono-ui text-xs font-bold hover:bg-amber-500 disabled:opacity-50 transition-colors shrink-0 shadow cursor-pointer"
+                className="px-4 py-1.5 bg-zinc-200 text-black font-mono-ui text-xs font-bold hover:bg-white disabled:opacity-50 transition-colors shrink-0 cursor-pointer"
               >
                 {isAdding ? "Adding…" : "Add to Queue"}
               </button>
             </div>
-            {addError && <p className="text-[0.7rem] text-destructive px-1">{addError}</p>}
+            {addError && <p className="text-[0.7rem] text-red-400 px-1 font-mono-ui">{addError}</p>}
           </form>
         )}
 
         {/* Queue Items List with Dynamic Banner Artwork on Every Song Card */}
-        <div className="max-h-[52vh] overflow-y-auto p-3 space-y-2.5">
+        <div className="max-h-[50vh] overflow-y-auto p-3 space-y-1.5">
           {p.tracks.length === 0 && (
-            <div className="py-12 text-center text-amber-300/50">
+            <div className="py-12 text-center text-zinc-500 font-mono-ui">
               <Music className="size-8 mx-auto mb-2 opacity-40" />
               <p className="text-sm font-medium">Queue is currently empty</p>
               <button
                 onClick={p.resetQueue}
-                className="mt-3 text-xs text-amber-400 underline underline-offset-4 hover:opacity-80 cursor-pointer"
+                className="mt-3 text-xs text-zinc-300 underline underline-offset-4 hover:text-white cursor-pointer"
               >
                 Restore default RMDU playlist
               </button>
@@ -506,28 +494,28 @@ function Index() {
                 onDragStart={() => handleDragStart(i)}
                 onDragOver={(e) => handleDragOver(e, i)}
                 onDragEnd={handleDragEnd}
-                className={`group relative flex items-center gap-3 rounded-2xl p-2.5 transition-all duration-200 border overflow-hidden ${
+                className={`group relative flex items-center gap-3 p-2 transition-colors border overflow-hidden ${
                   active
-                    ? "border-amber-500/90 bg-amber-500/20 shadow-[0_0_25px_rgba(245,158,11,0.25)] ring-1 ring-amber-400/40"
-                    : "border-amber-900/40 hover:border-amber-700/70 bg-[#160c06]/80 hover:bg-[#22130a]"
-                } ${draggedIndex === i ? "opacity-35 scale-[0.98]" : ""}`}
+                    ? "border-zinc-400 bg-[#1c202a]"
+                    : "border-zinc-800/80 hover:border-zinc-600 bg-[#13151b] hover:bg-[#181b22]"
+                } ${draggedIndex === i ? "opacity-35" : ""}`}
               >
-                {/* 🌟 Dynamic Song Banner Background on Every Song Card 🌟 */}
+                {/* Dynamic Song Banner Background */}
                 {t.thumbnail && (
                   <div
-                    className={`absolute inset-0 bg-cover bg-center transition-all duration-300 pointer-events-none ${
+                    className={`absolute inset-0 bg-cover bg-center pointer-events-none ${
                       active
-                        ? "opacity-35 filter blur-[2px] scale-105"
-                        : "opacity-15 filter blur-sm group-hover:opacity-25 group-hover:scale-102"
+                        ? "opacity-25 filter blur-[1px]"
+                        : "opacity-10 filter blur-sm group-hover:opacity-15"
                     }`}
                     style={{ backgroundImage: `url(${t.thumbnail})` }}
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#120a05]/95 via-[#120a05]/80 to-[#120a05]/95 pointer-events-none" />
+                <div className="absolute inset-0 bg-[#0c0d10]/80 pointer-events-none" />
 
                 {/* Drag Handle for Reordering */}
                 <div
-                  className="relative z-10 cursor-grab active:cursor-grabbing text-amber-600/50 hover:text-amber-300 transition-colors p-1"
+                  className="relative z-10 cursor-grab active:cursor-grabbing text-zinc-500 hover:text-zinc-200 transition-colors p-1"
                   title="Drag to rearrange queue"
                 >
                   <GripVertical className="size-4" />
@@ -537,18 +525,18 @@ function Index() {
                 <button
                   type="button"
                   onClick={() => p.playAt(i)}
-                  className="relative z-10 size-14 shrink-0 rounded-xl overflow-hidden bg-black/70 border border-amber-800/70 group-hover:ring-2 group-hover:ring-amber-500/70 transition-all text-left shadow cursor-pointer"
+                  className="relative z-10 size-12 shrink-0 overflow-hidden bg-black border border-zinc-700 transition-all text-left cursor-pointer"
                 >
                   <img
                     src={t.thumbnail}
                     alt={t.title}
-                    className="size-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    className="size-full object-cover"
                   />
                   {active && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-0.5 backdrop-blur-[1px]">
-                      <span className="w-1 bg-amber-400 rounded-full animate-eq-1" />
-                      <span className="w-1 bg-amber-200 rounded-full animate-eq-2" />
-                      <span className="w-1 bg-amber-400 rounded-full animate-eq-3" />
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-0.5">
+                      <span className="w-1 bg-zinc-200 animate-eq-1" />
+                      <span className="w-1 bg-zinc-400 animate-eq-2" />
+                      <span className="w-1 bg-zinc-200 animate-eq-3" />
                     </div>
                   )}
                 </button>
@@ -561,18 +549,18 @@ function Index() {
                 >
                   <p
                     className={`truncate text-xs sm:text-sm font-medium ${
-                      active ? "text-amber-200 font-bold" : "text-amber-100"
+                      active ? "text-white font-bold" : "text-zinc-200"
                     }`}
                   >
                     {t.title}
                   </p>
-                  <p className="truncate text-[0.72rem] text-amber-400/75 font-mono-ui">
+                  <p className="truncate text-[0.70rem] text-zinc-400 font-mono-ui">
                     {t.author}
                   </p>
                 </button>
 
                 {/* Duration */}
-                <span className="relative z-10 shrink-0 font-mono-ui text-[0.72rem] text-amber-300/70 font-medium">
+                <span className="relative z-10 shrink-0 font-mono-ui text-[0.70rem] text-zinc-400 font-medium">
                   {t.duration ? fmt(t.duration) : "--:--"}
                 </span>
 
@@ -584,7 +572,7 @@ function Index() {
                       disabled={i === 0}
                       onClick={() => p.moveTrack(i, i - 1)}
                       title="Move up one position"
-                      className="p-1 rounded text-amber-500/60 hover:text-amber-200 disabled:opacity-20 transition-colors cursor-pointer"
+                      className="p-0.5 text-zinc-500 hover:text-zinc-200 disabled:opacity-20 transition-colors cursor-pointer"
                     >
                       <ChevronUp className="size-3.5" />
                     </button>
@@ -593,7 +581,7 @@ function Index() {
                       disabled={i === p.tracks.length - 1}
                       onClick={() => p.moveTrack(i, i + 1)}
                       title="Move down one position"
-                      className="p-1 rounded text-amber-500/60 hover:text-amber-200 disabled:opacity-20 transition-colors cursor-pointer"
+                      className="p-0.5 text-zinc-500 hover:text-zinc-200 disabled:opacity-20 transition-colors cursor-pointer"
                     >
                       <ChevronDown className="size-3.5" />
                     </button>
@@ -605,7 +593,7 @@ function Index() {
                       type="button"
                       onClick={() => p.moveTrackToTop(i)}
                       title="Move to top of queue"
-                      className="hidden sm:inline-flex p-1.5 rounded-lg text-amber-500/50 hover:text-amber-200 hover:bg-white/10 transition-colors cursor-pointer"
+                      className="hidden sm:inline-flex p-1 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
                     >
                       <ArrowUpToLine className="size-3.5" />
                     </button>
@@ -616,7 +604,7 @@ function Index() {
                     type="button"
                     onClick={() => p.removeTrack(i)}
                     title="Remove from queue"
-                    className="p-1.5 rounded-lg text-amber-500/50 hover:text-destructive hover:bg-destructive/15 transition-colors cursor-pointer"
+                    className="p-1 text-zinc-500 hover:text-red-400 hover:bg-red-950/40 transition-colors cursor-pointer"
                   >
                     <Trash2 className="size-3.5" />
                   </button>
@@ -628,54 +616,41 @@ function Index() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 📻 VINTAGE WORKSITE RADIO CONSOLE (BOTTOM RETRO DECK) 📻 */}
+      {/* VINTAGE WORKSITE RADIO CONSOLE (BOTTOM RETRO HARDWARE DECK) */}
       {/* ========================================================================= */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex justify-center px-2 sm:px-4">
-        <div className="pointer-events-auto retro-radio-body relative flex w-full max-w-4xl flex-col rounded-2xl p-3 sm:p-3.5">
-          {/* 4 Corner Machined Chassis Screws */}
-          <span className="absolute top-2 left-2 size-2 rounded-full bg-zinc-600 border border-zinc-400/80 shadow-inner flex items-center justify-center pointer-events-none">
-            <span className="w-1 h-[1px] bg-zinc-900" />
-          </span>
-          <span className="absolute top-2 right-2 size-2 rounded-full bg-zinc-600 border border-zinc-400/80 shadow-inner flex items-center justify-center pointer-events-none">
-            <span className="w-1 h-[1px] bg-zinc-900" />
-          </span>
-          <span className="absolute bottom-2 left-2 size-2 rounded-full bg-zinc-600 border border-zinc-400/80 shadow-inner flex items-center justify-center pointer-events-none">
-            <span className="w-1 h-[1px] bg-zinc-900" />
-          </span>
-          <span className="absolute bottom-2 right-2 size-2 rounded-full bg-zinc-600 border border-zinc-400/80 shadow-inner flex items-center justify-center pointer-events-none">
-            <span className="w-1 h-[1px] bg-zinc-900" />
-          </span>
+      <div className="pointer-events-none fixed inset-x-0 bottom-3 z-50 flex justify-center px-2 sm:px-4">
+        <div className="pointer-events-auto retro-radio-body relative flex w-full max-w-4xl flex-col p-2.5 sm:p-3">
+          {/* 4 Corner Precision Metallic L-Brackets */}
+          <span className="absolute top-1 left-1 size-2 border-t-2 border-l-2 border-zinc-500 pointer-events-none" />
+          <span className="absolute top-1 right-1 size-2 border-t-2 border-r-2 border-zinc-500 pointer-events-none" />
+          <span className="absolute bottom-1 left-1 size-2 border-b-2 border-l-2 border-zinc-500 pointer-events-none" />
+          <span className="absolute bottom-1 right-1 size-2 border-b-2 border-r-2 border-zinc-500 pointer-events-none" />
 
           {/* Top Vintage Identification Header Strip */}
-          <div className="mb-2 flex items-center justify-between px-2 text-[0.62rem] font-mono-ui uppercase tracking-widest text-zinc-400 border-b border-zinc-800 pb-1.5">
+          <div className="mb-2 flex items-center justify-between px-1 text-[0.62rem] font-mono-ui uppercase tracking-widest text-zinc-400 border-b border-zinc-800 pb-1">
             <div className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_#10b981]" />
+              <span className="size-1.5 bg-emerald-500" />
               <span className="font-bold text-zinc-200 tracking-wider">
-                ✦ SOLID-STATE FM-AM RECEIVER • RMDU-003 ✦
+                SOLID-STATE FM-AM RECEIVER / MODEL RMDU-003
               </span>
             </div>
             <div className="flex items-center gap-3">
               <span className="hidden sm:inline text-zinc-400 font-mono-ui font-semibold">
-                STEREO HI-FI &bull; VALVE TONE
+                STEREO HI-FI / VALVE TONE
               </span>
-              <span className="size-1.5 rounded-full bg-red-500 shadow-[0_0_4px_#ef4444]" />
+              <span className="size-1.5 bg-red-500" />
             </div>
           </div>
 
           {/* Main Console Deck Layout */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* 1. Spinning Vinyl Record / Album Art Turntable */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* 1. Album Art / Turntable Module */}
             <button
               onClick={() => setEmbedOpen((v) => !v)}
               title={embedOpen ? "Close CRT video monitor" : "Open CRT video monitor"}
-              className="group relative size-12 sm:size-14 shrink-0 rounded-full bg-zinc-950 p-0.5 border border-zinc-700 hover:border-zinc-400 transition-all cursor-pointer shadow-[0_4px_12px_rgba(0,0,0,0.85)]"
+              className="group relative size-11 sm:size-13 shrink-0 bg-black border border-zinc-700 hover:border-zinc-400 transition-colors cursor-pointer"
             >
-              {/* Vinyl Grooves Background */}
-              <div
-                className={`relative size-full rounded-full overflow-hidden border border-zinc-800 shadow-inner ${
-                  p.playing ? "animate-vinyl" : "animate-vinyl-paused"
-                }`}
-              >
+              <div className="relative size-full overflow-hidden">
                 {currentCover ? (
                   <img
                     src={currentCover}
@@ -687,19 +662,13 @@ function Index() {
                     <Disc3 className="size-6 text-zinc-400" />
                   </div>
                 )}
-                {/* Center Machined Spindle */}
-                <div className="absolute inset-0 m-auto size-3 rounded-full bg-zinc-400 border border-zinc-600 shadow-sm flex items-center justify-center">
-                  <div className="size-1 rounded-full bg-zinc-950" />
-                </div>
               </div>
-
-              {/* Hover CRT Expand Icon */}
-              <span className="absolute inset-0 rounded-full bg-black/70 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-zinc-200">
+              <span className="absolute inset-0 bg-black/75 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-zinc-200">
                 {embedOpen ? <Minimize2 className="size-4" /> : <Maximize2 className="size-4" />}
               </span>
             </button>
 
-            {/* 2. Track Title & Artist Marquee */}
+            {/* 2. Track Title & Artist */}
             <div className="min-w-0 max-w-[100px] sm:max-w-[150px] md:max-w-[180px]">
               <p className="truncate text-xs sm:text-sm font-bold text-zinc-100 tracking-tight">
                 {p.current?.title ?? (p.ready ? "Station Ready" : "Tuning Station…")}
@@ -709,14 +678,14 @@ function Index() {
               </p>
             </div>
 
-            {/* 3. Backlit Radio Frequency Dial Scale (Track Seeker) */}
+            {/* 3. Analog Radio Frequency Dial Scale (Track Seeker) */}
             <div className="hidden min-w-0 flex-1 flex-col gap-0.5 md:flex">
               <div className="flex items-center gap-1.5">
                 {/* Quick Skip Backward 10s */}
                 <button
                   onClick={() => p.skipBackward(10)}
                   title="Rewind 10 seconds"
-                  className="retro-pushbutton p-1 rounded-md text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                  className="retro-pushbutton p-1 text-zinc-300 hover:text-white transition-colors cursor-pointer"
                 >
                   <Rewind className="size-3.5" />
                 </button>
@@ -738,10 +707,10 @@ function Index() {
                     const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
                     p.seek(ratio * p.duration);
                   }}
-                  className="group relative h-10 flex-1 cursor-pointer rounded-lg retro-tuner-glass p-1 overflow-hidden select-none"
+                  className="group relative h-9 flex-1 cursor-pointer retro-tuner-glass p-1 overflow-hidden select-none"
                 >
                   {/* Top FM Printed Radio Frequency Scale */}
-                  <div className="absolute inset-x-2.5 top-0.5 flex justify-between text-[0.52rem] font-mono-ui font-bold text-zinc-300 pointer-events-none tracking-wider">
+                  <div className="absolute inset-x-2 top-0.5 flex justify-between text-[0.52rem] font-mono-ui font-bold text-zinc-300 pointer-events-none tracking-wider">
                     <span>FM 88</span>
                     <span>92</span>
                     <span>96</span>
@@ -751,7 +720,7 @@ function Index() {
                   </div>
 
                   {/* Analog Frequency Scale Ruler with Vertical Precision Ticks */}
-                  <div className="absolute inset-x-2.5 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none">
+                  <div className="absolute inset-x-2 top-1/2 -translate-y-1/2 flex items-center justify-between pointer-events-none">
                     <div className="w-full flex items-center justify-between h-3 border-y border-zinc-800 px-0.5">
                       {Array.from({ length: 41 }).map((_, idx) => (
                         <div
@@ -769,7 +738,7 @@ function Index() {
                   </div>
 
                   {/* Bottom AM Printed Radio Frequency Scale */}
-                  <div className="absolute inset-x-2.5 bottom-0.5 flex justify-between text-[0.50rem] font-mono-ui text-zinc-400 pointer-events-none tracking-wider">
+                  <div className="absolute inset-x-2 bottom-0.5 flex justify-between text-[0.50rem] font-mono-ui text-zinc-400 pointer-events-none tracking-wider">
                     <span>AM 530</span>
                     <span>700</span>
                     <span>1000</span>
@@ -779,28 +748,29 @@ function Index() {
 
                   {/* Clean subtle track fill */}
                   <div
-                    className="absolute inset-y-1 left-1 rounded bg-white/[0.04] transition-all duration-100 pointer-events-none"
+                    className="absolute inset-y-1 left-1 bg-zinc-800/40 transition-all duration-100 pointer-events-none"
                     style={{ width: `${progress}%` }}
                   />
 
                   {/* Vintage Red Analog Tuning Needle */}
                   <div
-                    className="absolute top-0 bottom-0 w-[2px] bg-[#ff3333] shadow-[0_0_8px_rgba(255,50,50,0.85)] transition-all duration-100 pointer-events-none z-10"
+                    className="absolute top-0 bottom-0 w-[2px] bg-[#ff3333] transition-all duration-100 pointer-events-none z-10"
                     style={{ left: `${progress}%` }}
                   >
-                    <div className="absolute top-0 -left-[2px] w-1.5 h-1 bg-[#ff3333] border border-white/60 shadow-sm" />
-                    <div className="absolute bottom-0 -left-[2px] w-1.5 h-1 bg-[#ff3333] border border-white/60 shadow-sm" />
+                    <div className="absolute top-0 -left-[2px] w-1.5 h-1 bg-[#ff3333] border border-white/60" />
+                    <div className="absolute bottom-0 -left-[2px] w-1.5 h-1 bg-[#ff3333] border border-white/60" />
                   </div>
 
                   {/* Hover Time Tooltip */}
                   {hoverTime !== null && (
                     <div
-                      className="absolute -top-7 -translate-x-1/2 rounded bg-zinc-900 border border-zinc-700 px-1.5 py-0.5 font-mono-ui text-[0.62rem] text-zinc-100 pointer-events-none shadow-lg z-20"
+                      className="absolute -top-7 -translate-x-1/2 bg-zinc-900 border border-zinc-700 px-1.5 py-0.5 font-mono-ui text-[0.62rem] text-zinc-100 pointer-events-none shadow-lg z-20 flex items-center gap-1"
                       style={{
                         left: `${(hoverTime / (p.duration || 1)) * 100}%`,
                       }}
                     >
-                      📻 {fmt(hoverTime)}
+                      <Radio className="size-3 text-zinc-300" />
+                      {fmt(hoverTime)}
                     </div>
                   )}
                 </div>
@@ -809,7 +779,7 @@ function Index() {
                 <button
                   onClick={() => p.skipForward(10)}
                   title="Forward 10 seconds"
-                  className="retro-pushbutton p-1 rounded-md text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                  className="retro-pushbutton p-1 text-zinc-300 hover:text-white transition-colors cursor-pointer"
                 >
                   <FastForward className="size-3.5" />
                 </button>
@@ -826,7 +796,7 @@ function Index() {
                   />
                   <span>
                     {p.playing
-                      ? `SIGNAL LOCKED • ${p.repeatMode === "one" ? "LOOP ONE" : p.repeatMode === "all" ? "LOOP ALL" : "FM STEREO"}`
+                      ? `SIGNAL LOCKED / ${p.repeatMode === "one" ? "LOOP ONE" : p.repeatMode === "all" ? "LOOP ALL" : "FM STEREO"}`
                       : "TUNER PAUSED"}
                   </span>
                 </div>
@@ -834,26 +804,26 @@ function Index() {
               </div>
             </div>
 
-            {/* 4. Controls Cluster: Vintage Mechanical Pushbuttons, Loop Controls & Rotary Volume Knob */}
-            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            {/* 4. Controls Cluster: Square Pushbuttons & Volume Dial */}
+            <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
               {/* Shuffle Toggle Button with Jeweled Indicator Lamp */}
               <button
                 onClick={() => p.setShuffle(!p.shuffle)}
-                title={p.shuffle ? "Shuffle: ON (Randomizing tracks)" : "Shuffle: OFF"}
+                title={p.shuffle ? "Shuffle: ON" : "Shuffle: OFF"}
                 aria-label="Shuffle"
-                className={`retro-pushbutton relative rounded-lg p-2 transition-all cursor-pointer ${
+                className={`retro-pushbutton relative p-2 transition-colors cursor-pointer ${
                   p.shuffle
-                    ? "text-zinc-100 border-zinc-500 bg-zinc-800"
+                    ? "text-white border-zinc-500 bg-zinc-800"
                     : "text-zinc-400 hover:text-zinc-200"
                 }`}
               >
                 <Shuffle className="size-3.5 sm:size-4" />
                 {p.shuffle && (
-                  <span className="absolute top-1 right-1 size-1.5 rounded-full bg-emerald-400 shadow-[0_0_4px_#34d399]" />
+                  <span className="absolute top-0.5 right-0.5 size-1.5 bg-emerald-400" />
                 )}
               </button>
 
-              {/* Loop / Repeat Options Button (Off -> All -> One) with Vintage Lamp */}
+              {/* Loop / Repeat Options Button */}
               <div className="relative">
                 <button
                   onClick={p.toggleRepeat}
@@ -863,15 +833,15 @@ function Index() {
                   }}
                   title={
                     p.repeatMode === "all"
-                      ? "Loop Mode: REPEAT ALL (Click to loop current song)"
+                      ? "Loop Mode: REPEAT ALL"
                       : p.repeatMode === "one"
-                        ? "Loop Mode: REPEAT CURRENT SONG (Click to turn off)"
-                        : "Loop Mode: OFF (Click to loop all)"
+                        ? "Loop Mode: REPEAT ONE"
+                        : "Loop Mode: OFF"
                   }
                   aria-label="Repeat mode"
-                  className={`retro-pushbutton relative rounded-lg p-2 transition-all cursor-pointer ${
+                  className={`retro-pushbutton relative p-2 transition-colors cursor-pointer ${
                     p.repeatMode !== "off"
-                      ? "text-zinc-100 border-zinc-500 bg-zinc-800"
+                      ? "text-white border-zinc-500 bg-zinc-800"
                       : "text-zinc-400 hover:text-zinc-200"
                   }`}
                 >
@@ -881,22 +851,22 @@ function Index() {
                     <Repeat className="size-3.5 sm:size-4" />
                   )}
                   {p.repeatMode === "all" && (
-                    <span className="absolute top-1 right-1 size-1.5 rounded-full bg-amber-400 shadow-[0_0_4px_#f59e0b]" />
+                    <span className="absolute top-0.5 right-0.5 size-1.5 bg-amber-400" />
                   )}
                   {p.repeatMode === "one" && (
-                    <span className="absolute top-1 right-1 size-1.5 rounded-full bg-red-400 shadow-[0_0_4px_#f87171]" />
+                    <span className="absolute top-0.5 right-0.5 size-1.5 bg-red-400" />
                   )}
                 </button>
 
                 {/* Repeat Mode Quick Selection Menu */}
                 {repeatMenuOpen && (
-                  <div className="absolute bottom-12 left-0 z-50 flex flex-col gap-1 rounded-lg border border-zinc-700 bg-zinc-900 p-1.5 shadow-2xl backdrop-blur-xl min-w-[120px]">
+                  <div className="absolute bottom-12 left-0 z-50 flex flex-col gap-1 border border-zinc-700 bg-[#14161b] p-1 shadow-2xl min-w-[120px]">
                     <button
                       onClick={() => {
                         p.setRepeatMode("all");
                         setRepeatMenuOpen(false);
                       }}
-                      className={`px-2.5 py-1 rounded text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer flex items-center justify-between ${
+                      className={`px-2 py-1 text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer flex items-center justify-between ${
                         p.repeatMode === "all"
                           ? "bg-zinc-700 text-white font-bold"
                           : "text-zinc-300 hover:bg-zinc-800"
@@ -910,7 +880,7 @@ function Index() {
                         p.setRepeatMode("one");
                         setRepeatMenuOpen(false);
                       }}
-                      className={`px-2.5 py-1 rounded text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer flex items-center justify-between ${
+                      className={`px-2 py-1 text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer flex items-center justify-between ${
                         p.repeatMode === "one"
                           ? "bg-zinc-700 text-white font-bold"
                           : "text-zinc-300 hover:bg-zinc-800"
@@ -924,7 +894,7 @@ function Index() {
                         p.setRepeatMode("off");
                         setRepeatMenuOpen(false);
                       }}
-                      className={`px-2.5 py-1 rounded text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer flex items-center justify-between ${
+                      className={`px-2 py-1 text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer flex items-center justify-between ${
                         p.repeatMode === "off"
                           ? "bg-zinc-700 text-white font-bold"
                           : "text-zinc-300 hover:bg-zinc-800"
@@ -941,22 +911,22 @@ function Index() {
                 onClick={p.prev}
                 title="Previous Station"
                 aria-label="Previous track"
-                className="retro-pushbutton rounded-lg p-2 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                className="retro-pushbutton p-2 text-zinc-300 hover:text-white transition-colors cursor-pointer"
               >
                 <SkipBack className="size-3.5 sm:size-4" />
               </button>
 
-              {/* Master Play/Pause Round Machined Pushbutton */}
+              {/* Master Play/Pause Square Machined Pushbutton */}
               <button
                 onClick={p.toggle}
-                title={p.playing ? "Pause Receiver" : "Power / Play Receiver"}
+                title={p.playing ? "Pause Receiver" : "Play Receiver"}
                 aria-label="Play or pause"
-                className="retro-main-play flex size-11 sm:size-12 shrink-0 items-center justify-center rounded-full text-zinc-950 transition-all shadow-md cursor-pointer"
+                className="retro-main-play flex size-9 sm:size-10 shrink-0 items-center justify-center text-zinc-950 transition-colors cursor-pointer font-bold"
               >
                 {p.playing ? (
-                  <Pause className="size-5 text-zinc-950 fill-zinc-950 stroke-[2.5]" />
+                  <Pause className="size-4 text-zinc-950 fill-zinc-950 stroke-[2.5]" />
                 ) : (
-                  <Play className="size-5 translate-x-0.5 text-zinc-950 fill-zinc-950 stroke-[2.5]" />
+                  <Play className="size-4 translate-x-0.5 text-zinc-950 fill-zinc-950 stroke-[2.5]" />
                 )}
               </button>
 
@@ -965,14 +935,13 @@ function Index() {
                 onClick={p.next}
                 title="Next Station"
                 aria-label="Next track"
-                className="retro-pushbutton rounded-lg p-2 text-zinc-300 hover:text-white transition-colors cursor-pointer"
+                className="retro-pushbutton p-2 text-zinc-300 hover:text-white transition-colors cursor-pointer"
               >
                 <SkipForward className="size-3.5 sm:size-4" />
               </button>
 
-              {/* 5. VINTAGE MACHINED ROTARY VOLUME KNOB */}
+              {/* 5. Rotary Volume Dial Module */}
               <div className="relative flex flex-col items-center justify-center px-1">
-                {/* Rotary Knob Face */}
                 <div
                   ref={knobRef}
                   onMouseDown={handleKnobMouseDown}
@@ -981,17 +950,16 @@ function Index() {
                     p.setVolume(p.volume + (e.deltaY < 0 ? 5 : -5));
                   }}
                   title={`Master Volume: ${p.muted ? "MUTED" : `${p.volume}%`} (Turn or Drag)`}
-                  className="retro-knob relative size-10 sm:size-11 rounded-full cursor-grab active:cursor-grabbing flex items-center justify-center select-none"
+                  className="retro-knob relative size-9 sm:size-10 cursor-grab active:cursor-grabbing flex items-center justify-center select-none"
                 >
-                  {/* Fluted Rim Edge Markings */}
-                  <div className="absolute inset-0 rounded-full border border-zinc-500/50 pointer-events-none" />
+                  <div className="absolute inset-0 border border-zinc-500/40 pointer-events-none" />
 
-                  {/* Rotating Dial Indicator Line */}
+                  {/* Rotating Indicator Line */}
                   <div
-                    className="absolute size-full rounded-full transition-transform duration-75 pointer-events-none"
+                    className="absolute size-full transition-transform duration-75 pointer-events-none"
                     style={{ transform: `rotate(${knobAngle}deg)` }}
                   >
-                    <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-1 h-3 rounded-full bg-zinc-200 shadow-sm" />
+                    <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-1 h-2.5 bg-zinc-200" />
                   </div>
 
                   {/* Center Metal Cap / Mute Clicker */}
@@ -1001,36 +969,35 @@ function Index() {
                       e.stopPropagation();
                       p.toggleMute();
                     }}
-                    title={p.muted ? "Unmute" : "Mute (Click Center)"}
-                    className="relative z-10 size-4 sm:size-4.5 rounded-full bg-zinc-500 hover:bg-zinc-400 border border-zinc-300 shadow-inner flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+                    title={p.muted ? "Unmute" : "Mute"}
+                    className="relative z-10 size-4 bg-zinc-600 hover:bg-zinc-500 border border-zinc-400 flex items-center justify-center cursor-pointer"
                   >
                     {p.muted ? (
-                      <VolumeX className="size-2 text-zinc-950" />
+                      <VolumeX className="size-2.5 text-zinc-950" />
                     ) : (
-                      <div className="size-1 rounded-full bg-zinc-900" />
+                      <div className="size-1 bg-zinc-900" />
                     )}
                   </button>
                 </div>
 
-                {/* Dial Markings below */}
-                <div className="mt-0.5 flex justify-between w-full text-[0.50rem] font-mono-ui text-zinc-400 px-0.5 font-bold">
+                <div className="mt-0.5 flex justify-between w-full text-[0.48rem] font-mono-ui text-zinc-400 px-0.5 font-bold">
                   <span>0</span>
                   <span>VOL</span>
                   <span>10</span>
                 </div>
               </div>
 
-              {/* 6. Tape Speed Selector (RPM / Playback Rate Switch) */}
+              {/* 6. Tape Speed Selector Switch */}
               <div className="relative hidden lg:block">
                 <button
                   onClick={() => setSpeedOpen((v) => !v)}
                   title="Radio Tape Speed Selector"
-                  className="retro-pushbutton rounded-lg px-2 py-1.5 text-zinc-300 hover:text-white font-mono-ui text-[0.65rem] font-bold cursor-pointer"
+                  className="retro-pushbutton px-2 py-1.5 text-zinc-300 hover:text-white font-mono-ui text-[0.65rem] font-bold cursor-pointer"
                 >
                   {p.playbackRate}x
                 </button>
                 {speedOpen && (
-                  <div className="absolute bottom-12 right-0 z-50 flex flex-col gap-1 rounded-lg border border-zinc-700 bg-zinc-900 p-1.5 shadow-2xl backdrop-blur-xl min-w-[75px]">
+                  <div className="absolute bottom-12 right-0 z-50 flex flex-col gap-1 border border-zinc-700 bg-[#14161b] p-1 shadow-2xl min-w-[75px]">
                     {[0.5, 0.75, 1, 1.25, 1.5, 2].map((rate) => (
                       <button
                         key={rate}
@@ -1038,7 +1005,7 @@ function Index() {
                           p.setPlaybackRate(rate);
                           setSpeedOpen(false);
                         }}
-                        className={`px-2 py-1 rounded text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer ${
+                        className={`px-2 py-1 text-[0.7rem] font-mono-ui text-left transition-colors cursor-pointer ${
                           p.playbackRate === rate
                             ? "bg-zinc-700 text-white font-bold"
                             : "text-zinc-300 hover:bg-zinc-800"
@@ -1051,20 +1018,20 @@ function Index() {
                 )}
               </div>
 
-              {/* 7. Radio Station Queue Toggle Button with Total Count Badge */}
+              {/* 7. Radio Station Queue Toggle Button */}
               <button
                 onClick={() => setQueueOpen((v) => !v)}
-                title="Toggle Station Queue & Song Banners"
+                title="Toggle Station Queue"
                 aria-label="Toggle queue"
-                className={`retro-pushbutton relative rounded-lg p-2 transition-all cursor-pointer ${
+                className={`retro-pushbutton relative p-2 transition-colors cursor-pointer ${
                   queueOpen
-                    ? "text-zinc-100 border-zinc-500 bg-zinc-800"
+                    ? "text-white border-zinc-500 bg-zinc-800"
                     : "text-zinc-400 hover:text-zinc-200"
                 }`}
               >
                 <ListMusic className="size-3.5 sm:size-4" />
                 {total > 0 && (
-                  <span className="absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-zinc-100 font-mono-ui text-[0.55rem] font-bold text-zinc-950 shadow">
+                  <span className="absolute -top-1 -right-1 flex size-3.5 items-center justify-center bg-zinc-200 font-mono-ui text-[0.52rem] font-bold text-zinc-950">
                     {total}
                   </span>
                 )}
