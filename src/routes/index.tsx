@@ -397,7 +397,7 @@ function Index() {
       {/* CENTER STAGE: CLEAN & UNOBSTRUCTED DURING PLAYBACK */}
       {/* ========================================================================= */}
       <main className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center pb-32 pointer-events-none">
-        {!isPlayingOrSelected ? (
+        {!isSongActive ? (
           /* Standby: RMDU Station Banner */
           <div className="relative max-w-3xl pointer-events-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 border border-zinc-700 bg-black/60 backdrop-blur-md mb-3 shadow-lg">
