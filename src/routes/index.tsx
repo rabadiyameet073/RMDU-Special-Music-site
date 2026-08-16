@@ -953,36 +953,39 @@ function Index() {
       {/* ========================================================================= */}
       {/* 📺 CRT CATHODE TUBE MONITOR VIDEO FEED (ELEGANT TOP-RIGHT DOCKED) 📺 */}
       {/* ========================================================================= */}
-      {embedOpen && (
-        <section
-          className="fixed top-14 right-4 sm:right-6 z-50 w-[min(92vw,26rem)] crt-bezel-frame animate-crt-turn-on select-none"
-        >
-          <div className="flex items-center justify-between border-b border-[#4a3826] px-3.5 py-1.5 bg-[#1a140e] text-amber-200">
-            <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_4px_#34d399]" />
-              <Tv className="size-3.5 text-amber-400" />
-              <span className="font-mono-ui text-[0.68rem] uppercase tracking-widest font-bold text-amber-100">
-                CRT TUBE FEED • CH-01
-              </span>
-            </div>
-            <button
-              onClick={() => setEmbedOpen(false)}
-              aria-label="Close video player"
-              className="p-1 text-amber-400/80 hover:text-white hover:bg-amber-950/60 transition-colors cursor-pointer"
-            >
-              <X className="size-4" />
-            </button>
+      <section
+        className={`fixed top-14 right-4 sm:right-6 z-50 w-[min(92vw,26rem)] crt-bezel-frame select-none transition-all duration-300 ${
+          embedOpen
+            ? "opacity-100 scale-100 pointer-events-auto animate-crt-turn-on"
+            : "opacity-0 scale-95 pointer-events-none invisible"
+        }`}
+        aria-hidden={!embedOpen}
+      >
+        <div className="flex items-center justify-between border-b border-[#4a3826] px-3.5 py-1.5 bg-[#1a140e] text-amber-200">
+          <div className="flex items-center gap-2">
+            <span className="size-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_4px_#34d399]" />
+            <Tv className="size-3.5 text-amber-400" />
+            <span className="font-mono-ui text-[0.68rem] uppercase tracking-widest font-bold text-amber-100">
+              CRT TUBE FEED • CH-01
+            </span>
           </div>
-          <div
-            id="yt-player-host-wrapper"
-            className="aspect-video w-full overflow-hidden bg-black relative"
+          <button
+            onClick={() => setEmbedOpen(false)}
+            aria-label="Close video player"
+            className="p-1 text-amber-400/80 hover:text-white hover:bg-amber-950/60 transition-colors cursor-pointer"
           >
-            <div id="yt-player-host" className="size-full" />
-            {/* Vintage CRT Scanline & Phosphor Flicker Overlay */}
-            <div className="absolute inset-0 size-full crt-scanlines pointer-events-none" />
-          </div>
-        </section>
-      )}
+            <X className="size-4" />
+          </button>
+        </div>
+        <div
+          id="yt-player-host-wrapper"
+          className="aspect-video w-full overflow-hidden bg-black relative"
+        >
+          <div id="yt-player-host" className="size-full" />
+          {/* Vintage CRT Scanline & Phosphor Flicker Overlay */}
+          <div className="absolute inset-0 size-full crt-scanlines pointer-events-none" />
+        </div>
+      </section>
 
       {/* ========================================================================= */}
       {/* 📼 VINTAGE CASSETTE RACK QUEUE DRAWER (ABOVE CONTROLLER, NEVER HIDDEN) 📼 */}

@@ -264,7 +264,7 @@ export function useYouTubePlaylist() {
                   title: m.title || t.title,
                   author: m.author || t.author,
                   thumbnail:
-                    m.thumbnail_url || `https://i.ytimg.com/vi/${t.videoId}/maxresdefault.jpg`,
+                    m.thumbnail_url || `https://i.ytimg.com/vi/${t.videoId}/hqdefault.jpg`,
                 };
               }
             });
@@ -433,10 +433,22 @@ export function useYouTubePlaylist() {
     if (playing) {
       p.pauseVideo();
     } else {
-      if (!tracks.length) return;
-      p.playVideo();
+      const currentTrack = tracksRef.current[indexRef.current];
+      if (!currentTrack) return;
+      try {
+        const state = p.getPlayerState?.();
+        if (state === -1 || state === 5 || state === undefined) {
+          // -1 unstarted, 5 cued: load and play active track
+          p.loadVideoById({ videoId: currentTrack.videoId, startSeconds: time || 0 });
+        } else {
+          p.playVideo();
+        }
+      } catch {
+        p.loadVideoById({ videoId: currentTrack.videoId, startSeconds: 0 });
+      }
+      setPlaying(true);
     }
-  }, [playing, tracks.length]);
+  }, [playing, time]);
 
   const seek = useCallback((s: number) => {
     playerRef.current?.seekTo(s, true);
