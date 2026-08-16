@@ -857,293 +857,272 @@ function Index() {
       )}
 
       {/* ========================================================================= */}
-      {/* CRT MONITOR VIDEO FEED FLOATING MODAL */}
       {/* ========================================================================= */}
-      <section
-        className={`absolute bottom-36 left-1/2 z-40 w-[min(92vw,34rem)] -translate-x-1/2 border border-zinc-700 bg-[#111317] shadow-2xl transition-all duration-200 ${
-          embedOpen
-            ? "pointer-events-auto translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-4 opacity-0"
-        }`}
-      >
-        <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2 bg-[#0c0d10]">
-          <div className="flex items-center gap-2">
-            <Tv className="size-3.5 text-zinc-300" />
-            <span className="font-mono-ui text-[0.68rem] uppercase tracking-[0.2em] text-zinc-200 font-semibold">
-              CRT Monitor Feed / CH-01
-            </span>
-          </div>
-          <button
-            onClick={() => setEmbedOpen(false)}
-            aria-label="Close video player"
-            className="p-1 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white cursor-pointer"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-        <div
-          id="yt-player-host-wrapper"
-          className="aspect-video w-full overflow-hidden bg-black border-t border-zinc-800"
+      {/* 📺 CRT CATHODE TUBE MONITOR VIDEO FEED (ELEGANT TOP-RIGHT DOCKED) 📺 */}
+      {/* ========================================================================= */}
+      {embedOpen && (
+        <section
+          className="fixed top-14 right-4 sm:right-6 z-50 w-[min(92vw,26rem)] crt-bezel-frame animate-crt-turn-on select-none"
         >
-          <div id="yt-player-host" className="size-full" />
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* PLAYLIST QUEUE DRAWER: REARRANGE, REMOVE, SHUFFLE & TRACK CARDS */}
-      {/* ========================================================================= */}
-      <section
-        className={`absolute bottom-36 left-1/2 z-30 w-[min(94vw,46rem)] -translate-x-1/2 border border-zinc-700 bg-[#111317] shadow-2xl transition-all duration-200 flex flex-col ${
-          queueOpen
-            ? "pointer-events-auto translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-4 opacity-0"
-        }`}
-      >
-        {/* Queue Header & Action Bar */}
-        <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5 bg-[#0c0d10]">
-          <div className="flex items-center gap-2.5">
-            <ListMusic className="size-4 text-zinc-300" />
-            <span className="font-mono-ui text-xs uppercase tracking-[0.18em] text-zinc-100 font-bold">
-              Station Queue [{total}]
-            </span>
-            {totalDuration > 0 && (
-              <span className="hidden sm:inline font-mono-ui text-[0.7rem] text-zinc-400">
-                / {fmt(totalDuration)}
+          <div className="flex items-center justify-between border-b border-[#4a3826] px-3.5 py-1.5 bg-[#1a140e] text-amber-200">
+            <div className="flex items-center gap-2">
+              <span className="size-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_4px_#34d399]" />
+              <Tv className="size-3.5 text-amber-400" />
+              <span className="font-mono-ui text-[0.68rem] uppercase tracking-widest font-bold text-amber-100">
+                CRT TUBE FEED • CH-01
               </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-1.5">
-            {/* Add Track Button */}
+            </div>
             <button
-              onClick={() => setAddOpen((v) => !v)}
-              title="Add YouTube song to queue"
-              className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-mono-ui font-semibold border border-zinc-600 bg-[#1d2028] hover:bg-[#282c38] transition-colors text-zinc-100 cursor-pointer"
-            >
-              <Plus className="size-3.5 text-zinc-300" />
-              Add Track
-            </button>
-
-            {/* Shuffle Queue Order */}
-            <button
-              onClick={p.shuffleQueue}
-              title="Randomize / Shuffle entire queue order"
-              className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-            >
-              <Shuffle className="size-3.5" />
-            </button>
-
-            {/* Reverse Queue Order */}
-            <button
-              onClick={p.reverseQueue}
-              title="Reverse queue order"
-              className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-            >
-              <ArrowUpDown className="size-3.5" />
-            </button>
-
-            {/* Reset to Original Playlist */}
-            <button
-              onClick={p.resetQueue}
-              title="Reset queue to original playlist"
-              className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
-            >
-              <RotateCcw className="size-3.5" />
-            </button>
-
-            {/* Clear Entire Queue */}
-            <button
-              onClick={p.clearQueue}
-              title="Clear all songs from queue"
-              className="p-1.5 text-zinc-400 hover:text-red-400 hover:bg-red-950/40 transition-colors cursor-pointer"
-            >
-              <Trash2 className="size-3.5" />
-            </button>
-
-            <span className="h-4 w-px bg-zinc-800 mx-0.5" />
-
-            {/* Close Queue Drawer */}
-            <button
-              onClick={() => setQueueOpen(false)}
-              aria-label="Close queue"
-              className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
+              onClick={() => setEmbedOpen(false)}
+              aria-label="Close video player"
+              className="p-1 text-amber-400/80 hover:text-white hover:bg-amber-950/60 transition-colors cursor-pointer"
             >
               <X className="size-4" />
             </button>
           </div>
-        </div>
-
-        {/* Add Song Form Panel */}
-        {addOpen && (
-          <form
-            onSubmit={handleAddSong}
-            className="p-3 border-b border-zinc-800 bg-[#0e1014] flex flex-col gap-2"
+          <div
+            id="yt-player-host-wrapper"
+            className="aspect-video w-full overflow-hidden bg-black relative"
           >
-            <div className="flex gap-2">
-              <input
-                type="text"
-                placeholder="Paste YouTube Link or Video ID (e.g. youtu.be/... or watch?v=...)"
-                value={newSongInput}
-                onChange={(e) => setNewSongInput(e.target.value)}
-                className="flex-1 border border-zinc-700 bg-black px-3.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-400 font-mono-ui"
-              />
-              <button
-                type="submit"
-                disabled={isAdding}
-                className="px-4 py-1.5 bg-zinc-200 text-black font-mono-ui text-xs font-bold hover:bg-white disabled:opacity-50 transition-colors shrink-0 cursor-pointer"
-              >
-                {isAdding ? "Adding…" : "Add to Queue"}
-              </button>
-            </div>
-            {addError && <p className="text-[0.7rem] text-red-400 px-1 font-mono-ui">{addError}</p>}
-          </form>
-        )}
+            <div id="yt-player-host" className="size-full" />
+            {/* Vintage CRT Scanline & Phosphor Flicker Overlay */}
+            <div className="absolute inset-0 size-full crt-scanlines pointer-events-none" />
+          </div>
+        </section>
+      )}
 
-        {/* Queue Items List with Dynamic Banner Artwork on Every Song Card */}
-        <div className="max-h-[50vh] overflow-y-auto p-3 space-y-1.5">
-          {p.tracks.length === 0 && (
-            <div className="py-12 text-center text-zinc-500 font-mono-ui">
-              <Music className="size-8 mx-auto mb-2 opacity-40" />
-              <p className="text-sm font-medium">Queue is currently empty</p>
+      {/* ========================================================================= */}
+      {/* 📼 VINTAGE CASSETTE RACK QUEUE DRAWER (ABOVE CONTROLLER, NEVER HIDDEN) 📼 */}
+      {/* ========================================================================= */}
+      {queueOpen && (
+        <section
+          className="fixed bottom-[185px] sm:bottom-[195px] left-1/2 z-40 w-[min(94vw,44rem)] -translate-x-1/2 vintage-cassette-rack animate-vintage-drawer flex flex-col max-h-[min(56vh,450px)] select-none"
+        >
+          {/* Queue Header & Vintage Action Bar */}
+          <div className="flex items-center justify-between border-b border-[#4a3826] px-4 py-2.5 bg-[#1a140e]">
+            <div className="flex items-center gap-2.5">
+              <ListMusic className="size-4 text-amber-400" />
+              <span className="font-mono-ui text-xs uppercase tracking-widest text-amber-100 font-bold">
+                CASSETTE RACK [{total}]
+              </span>
+              {totalDuration > 0 && (
+                <span className="hidden sm:inline font-mono-ui text-[0.68rem] text-amber-400/70">
+                  / {fmt(totalDuration)}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-1.5">
+              {/* Add Track Button */}
+              <button
+                onClick={() => setAddOpen((v) => !v)}
+                title="Add YouTube song to queue"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-[0.68rem] font-mono-ui font-bold border border-[#785935] bg-[#2b1f14] hover:bg-[#3d2c1c] transition-colors text-amber-100 cursor-pointer shadow-sm"
+              >
+                <Plus className="size-3 text-amber-400" />
+                Add Track
+              </button>
+
+              {/* Shuffle Queue Order */}
+              <button
+                onClick={p.shuffleQueue}
+                title="Shuffle entire queue"
+                className="p-1.5 text-amber-300/80 hover:text-white hover:bg-[#2b1f14] transition-colors cursor-pointer"
+              >
+                <Shuffle className="size-3.5" />
+              </button>
+
+              {/* Reverse Queue Order */}
+              <button
+                onClick={p.reverseQueue}
+                title="Reverse queue order"
+                className="p-1.5 text-amber-300/80 hover:text-white hover:bg-[#2b1f14] transition-colors cursor-pointer"
+              >
+                <ArrowUpDown className="size-3.5" />
+              </button>
+
+              {/* Reset to Original Playlist */}
               <button
                 onClick={p.resetQueue}
-                className="mt-3 text-xs text-zinc-300 underline underline-offset-4 hover:text-white cursor-pointer"
+                title="Reset queue to original playlist"
+                className="p-1.5 text-amber-300/80 hover:text-white hover:bg-[#2b1f14] transition-colors cursor-pointer"
               >
-                Restore default RMDU playlist
+                <RotateCcw className="size-3.5" />
+              </button>
+
+              {/* Clear Entire Queue */}
+              <button
+                onClick={p.clearQueue}
+                title="Clear all songs from queue"
+                className="p-1.5 text-amber-400/60 hover:text-red-400 hover:bg-red-950/40 transition-colors cursor-pointer"
+              >
+                <Trash2 className="size-3.5" />
+              </button>
+
+              <span className="h-4 w-px bg-[#4a3826] mx-0.5" />
+
+              {/* Close Queue Drawer */}
+              <button
+                onClick={() => setQueueOpen(false)}
+                aria-label="Close queue"
+                className="p-1.5 text-amber-300/80 hover:text-white hover:bg-[#2b1f14] transition-colors cursor-pointer"
+              >
+                <X className="size-4" />
               </button>
             </div>
+          </div>
+
+          {/* Add Song Form Panel */}
+          {addOpen && (
+            <form
+              onSubmit={handleAddSong}
+              className="p-3 border-b border-[#4a3826] bg-[#14100c] flex flex-col gap-2"
+            >
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Paste YouTube Link or Video ID (e.g. youtu.be/...)"
+                  value={newSongInput}
+                  onChange={(e) => setNewSongInput(e.target.value)}
+                  className="flex-1 border border-[#5c4728] bg-black px-3.5 py-1.5 text-xs text-amber-100 placeholder:text-zinc-600 focus:outline-none focus:border-amber-400 font-mono-ui"
+                />
+                <button
+                  type="submit"
+                  disabled={isAdding}
+                  className="px-4 py-1.5 bg-[#d4af37] text-black font-mono-ui text-xs font-bold hover:bg-[#fde047] disabled:opacity-50 transition-colors shrink-0 cursor-pointer"
+                >
+                  {isAdding ? "Adding…" : "Add to Rack"}
+                </button>
+              </div>
+              {addError && <p className="text-[0.7rem] text-red-400 px-1 font-mono-ui">{addError}</p>}
+            </form>
           )}
 
-          {p.tracks.map((t, i) => {
-            const active = i === p.index;
-            return (
-              <div
-                key={t.videoId + "-" + i}
-                ref={active ? activeRef : null}
-                draggable
-                onDragStart={() => handleDragStart(i)}
-                onDragOver={(e) => handleDragOver(e, i)}
-                onDragEnd={handleDragEnd}
-                className={`group relative flex items-center gap-3 p-2 transition-colors border overflow-hidden ${
-                  active
-                    ? "border-zinc-400 bg-[#1c202a]"
-                    : "border-zinc-800/80 hover:border-zinc-600 bg-[#13151b] hover:bg-[#181b22]"
-                } ${draggedIndex === i ? "opacity-35" : ""}`}
-              >
-                {/* Dynamic Song Banner Background */}
-                {t.thumbnail && (
-                  <div
-                    className={`absolute inset-0 bg-cover bg-center pointer-events-none ${
-                      active
-                        ? "opacity-25 filter blur-[1px]"
-                        : "opacity-10 filter blur-sm group-hover:opacity-15"
-                    }`}
-                    style={{ backgroundImage: `url(${t.thumbnail})` }}
-                  />
-                )}
-                <div className="absolute inset-0 bg-[#0c0d10]/80 pointer-events-none" />
+          {/* Queue Items List with Dynamic Banner Artwork on Every Song Card */}
+          <div className="overflow-y-auto p-3 space-y-1.5 flex-1">
+            {p.tracks.length === 0 && (
+              <div className="py-10 text-center text-amber-400/60 font-mono-ui">
+                <Music className="size-8 mx-auto mb-2 opacity-40" />
+                <p className="text-sm font-medium">Rack is currently empty</p>
+                <button
+                  onClick={p.resetQueue}
+                  className="mt-3 text-xs text-amber-300 underline underline-offset-4 hover:text-white cursor-pointer"
+                >
+                  Restore default RMDU playlist
+                </button>
+              </div>
+            )}
 
-                {/* Drag Handle for Reordering */}
+            {p.tracks.map((t, i) => {
+              const active = i === p.index;
+              return (
                 <div
-                  className="relative z-10 cursor-grab active:cursor-grabbing text-zinc-500 hover:text-zinc-200 transition-colors p-1"
-                  title="Drag to rearrange queue"
+                  key={t.videoId + "-" + i}
+                  ref={active ? activeRef : null}
+                  draggable
+                  onDragStart={() => handleDragStart(i)}
+                  onDragOver={(e) => handleDragOver(e, i)}
+                  onDragEnd={handleDragEnd}
+                  className={`group relative flex items-center gap-3 p-2 transition-all border overflow-hidden ${
+                    active
+                      ? "border-amber-400 bg-[#2b1f14] shadow-md"
+                      : "border-[#3d2f20] hover:border-[#5c4728] bg-[#1a140e] hover:bg-[#221a12]"
+                  } ${draggedIndex === i ? "opacity-35" : ""}`}
                 >
-                  <GripVertical className="size-4" />
-                </div>
-
-                {/* Song Banner Thumbnail with Live Equalizer */}
-                <button
-                  type="button"
-                  onClick={() => p.playAt(i)}
-                  className="relative z-10 size-12 shrink-0 overflow-hidden bg-black border border-zinc-700 transition-all text-left cursor-pointer"
-                >
-                  <img
-                    src={t.thumbnail}
-                    alt={t.title}
-                    className="size-full object-cover"
-                  />
-                  {active && (
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-0.5">
-                      <span className="w-1 bg-zinc-200 animate-eq-1" />
-                      <span className="w-1 bg-zinc-400 animate-eq-2" />
-                      <span className="w-1 bg-zinc-200 animate-eq-3" />
-                    </div>
+                  {/* Dynamic Song Banner Background */}
+                  {t.thumbnail && (
+                    <div
+                      className={`absolute inset-0 bg-cover bg-center pointer-events-none ${
+                        active
+                          ? "opacity-25 filter blur-[1px]"
+                          : "opacity-10 filter blur-sm group-hover:opacity-15"
+                      }`}
+                      style={{ backgroundImage: `url(${t.thumbnail})` }}
+                    />
                   )}
-                </button>
+                  <div className="absolute inset-0 bg-[#0d0a07]/80 pointer-events-none" />
 
-                {/* Track Title and Artist */}
-                <button
-                  type="button"
-                  onClick={() => p.playAt(i)}
-                  className="relative z-10 min-w-0 flex-1 text-left cursor-pointer"
-                >
-                  <p
-                    className={`truncate text-xs sm:text-sm font-medium ${
-                      active ? "text-white font-bold" : "text-zinc-200"
-                    }`}
+                  {/* Drag Handle for Reordering */}
+                  <div
+                    className="relative z-10 cursor-grab active:cursor-grabbing text-zinc-500 hover:text-amber-300 transition-colors p-1"
+                    title="Drag to rearrange queue"
                   >
-                    {t.title}
-                  </p>
-                  <p className="truncate text-[0.70rem] text-zinc-400 font-mono-ui">
-                    {t.author}
-                  </p>
-                </button>
-
-                {/* Duration */}
-                <span className="relative z-10 shrink-0 font-mono-ui text-[0.70rem] text-zinc-400 font-medium">
-                  {t.duration ? fmt(t.duration) : "--:--"}
-                </span>
-
-                {/* Rearrange Up/Down/Top & Remove Controls */}
-                <div className="relative z-10 flex items-center gap-1">
-                  <div className="flex flex-col">
-                    <button
-                      type="button"
-                      disabled={i === 0}
-                      onClick={() => p.moveTrack(i, i - 1)}
-                      title="Move up one position"
-                      className="p-0.5 text-zinc-500 hover:text-zinc-200 disabled:opacity-20 transition-colors cursor-pointer"
-                    >
-                      <ChevronUp className="size-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      disabled={i === p.tracks.length - 1}
-                      onClick={() => p.moveTrack(i, i + 1)}
-                      title="Move down one position"
-                      className="p-0.5 text-zinc-500 hover:text-zinc-200 disabled:opacity-20 transition-colors cursor-pointer"
-                    >
-                      <ChevronDown className="size-3.5" />
-                    </button>
+                    <GripVertical className="size-4" />
                   </div>
 
-                  {/* Move to Top */}
-                  {i > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => p.moveTrackToTop(i)}
-                      title="Move to top of queue"
-                      className="hidden sm:inline-flex p-1 text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors cursor-pointer"
-                    >
-                      <ArrowUpToLine className="size-3.5" />
-                    </button>
-                  )}
-
-                  {/* Remove Track from Queue */}
+                  {/* Song Banner Thumbnail with Live Equalizer */}
                   <button
                     type="button"
-                    onClick={() => p.removeTrack(i)}
-                    title="Remove from queue"
-                    className="p-1 text-zinc-500 hover:text-red-400 hover:bg-red-950/40 transition-colors cursor-pointer"
+                    onClick={() => p.playAt(i)}
+                    className="relative z-10 size-12 shrink-0 overflow-hidden bg-black border border-[#4a3826] transition-all text-left cursor-pointer"
+                  >
+                    <img
+                      src={t.thumbnail}
+                      alt={t.title}
+                      className="size-full object-cover"
+                    />
+                    {active && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center gap-0.5">
+                        <span className="w-1 bg-amber-300 animate-eq-1" />
+                        <span className="w-1 bg-amber-400 animate-eq-2" />
+                        <span className="w-1 bg-amber-300 animate-eq-3" />
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Track Title and Artist */}
+                  <div
+                    onClick={() => p.playAt(i)}
+                    className="relative z-10 flex-1 min-w-0 cursor-pointer"
+                  >
+                    <p
+                      className={`truncate text-xs font-bold font-mono-ui ${
+                        active ? "text-amber-200" : "text-zinc-200 group-hover:text-amber-100"
+                      }`}
+                    >
+                      {t.title}
+                    </p>
+                    <p className="truncate text-[0.68rem] text-zinc-400 font-mono-ui">
+                      {t.author}
+                    </p>
+                  </div>
+
+                  {/* Duration or Live Status */}
+                  <div className="relative z-10 text-[0.68rem] font-mono-ui text-zinc-400 tabular-nums">
+                    {t.duration > 0 ? fmt(t.duration) : "--:--"}
+                  </div>
+
+                  {/* Move to Top Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      p.moveTrack(i, 0);
+                    }}
+                    title="Move song to top of queue"
+                    className="relative z-10 p-1 text-zinc-500 hover:text-amber-300 transition-colors cursor-pointer"
+                  >
+                    <ArrowUpToLine className="size-3.5" />
+                  </button>
+
+                  {/* Remove Track Button */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      p.removeTrack(i);
+                    }}
+                    title="Remove song from queue"
+                    className="relative z-10 p-1 text-zinc-500 hover:text-red-400 transition-colors cursor-pointer"
                   >
                     <Trash2 className="size-3.5" />
                   </button>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* ========================================================================= */}
       {/* 📻 VINTAGE ALL-WAVE RADIO & CASSETTE CONSOLE (GROUNDED IN USER REFERENCES) 📻 */}

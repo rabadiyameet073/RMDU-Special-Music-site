@@ -402,13 +402,93 @@
 .chassis-face-left,
 .chassis-face-right {
   background-color: #241a11;
-  border: 2px solid #3d2f20;
+  border: 3px solid #3d2f20;
   background-image: linear-gradient(0deg, rgba(0,0,0,0.3) 1px, transparent 1px);
   background-size: 100% 6px;
 }
 
 /* Telescopic Antenna Metal Finish */
 .telescopic-antenna {
-  background: linear-gradient(90deg, #d1d5db, #ffffff 40%, #9ca3af 70%, #4b5563);
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(90deg, #d1d5db 0%, #9ca3af 40%, #f3f4f6 60%, #4b5563 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* ========================================================================= */
+/* 📺 CRT MONITOR & VINTAGE DRAWER PHYSICAL ANIMATIONS 📺 */
+/* ========================================================================= */
+
+@keyframes crt-power-on {
+  0% {
+    transform: scale(0.01, 0.005);
+    filter: brightness(25) contrast(3);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1, 0.005);
+    filter: brightness(15) contrast(2);
+    opacity: 1;
+  }
+  65% {
+    transform: scale(1, 0.95);
+    filter: brightness(4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1, 1);
+    filter: brightness(1);
+    opacity: 1;
+  }
+}
+
+.animate-crt-turn-on {
+  animation: crt-power-on 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes vintage-drawer-up {
+  0% {
+    transform: translate(-50%, 30px) scale(0.96);
+    opacity: 0;
+  }
+  70% {
+    transform: translate(-50%, -4px) scale(1.01);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 0px) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-vintage-drawer {
+  animation: vintage-drawer-up 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes scanline-flicker {
+  0% { opacity: 0.15; }
+  50% { opacity: 0.25; }
+  100% { opacity: 0.15; }
+}
+
+.crt-scanlines {
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%);
+  background-size: 100% 4px;
+  animation: scanline-flicker 0.1s infinite;
+  pointer-events: none;
+}
+
+.crt-bezel-frame {
+  background: #14100c;
+  border: 3px solid #5a4528;
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.95),
+    inset 0 0 15px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.vintage-cassette-rack {
+  background: #16120e;
+  border: 2px solid #5c4728;
+  box-shadow:
+    0 -12px 40px rgba(0, 0, 0, 0.95),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
 }
