@@ -5,9 +5,11 @@ import {
   ArrowUpDown,
   ArrowUpRight,
   ArrowUpToLine,
+  Box,
   ChevronDown,
   ChevronUp,
   Clock,
+  Compass,
   Disc3,
   FastForward,
   GripVertical,
@@ -46,17 +48,17 @@ const YTM_PLAYLIST = `https://music.youtube.com/playlist?list=${PLAYLIST_ID}`;
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "RMDU Special — Vintage Audio Receiver" },
+      { title: "RMDU Special — 3D Vintage Audio Receiver" },
       {
         name: "description",
         content:
-          "RMDU Special: an authentic vintage industrial all-wave radio receiver with analog frequency tuner, rotary volume dial, queue manager, and live playback.",
+          "RMDU Special: an authentic 3D interactive vintage all-wave radio receiver with rotatable 3D cabinet, telescopic antenna, multi-band frequency tuner, and live playback controls.",
       },
-      { property: "og:title", content: "RMDU Special — Vintage Audio Receiver" },
+      { property: "og:title", content: "RMDU Special — 3D Vintage Audio Receiver" },
       {
         property: "og:description",
         content:
-          "Classic analog radio controls, rotary volume dial, frequency tuning seeker, and custom music queue with dynamic banner artwork.",
+          "Rotate and inspect the 3D vintage radio cabinet, extend the telescopic antenna, turn the analog rotary volume dial, and tune live music stations.",
       },
       { property: "og:type", content: "music.playlist" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -91,6 +93,15 @@ function Index() {
   const [queueOpen, setQueueOpen] = useState(false);
   const [embedOpen, setEmbedOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
+  const [threeDOpen, setThreeDOpen] = useState(false);
+  const [rotX, setRotX] = useState(-8);
+  const [rotY, setRotY] = useState(18);
+  const [zoom, setZoom] = useState(1);
+  const [antennaExtended, setAntennaExtended] = useState(true);
+  const [antennaAngle, setAntennaAngle] = useState(30);
+  const [is3DDragging, setIs3DDragging] = useState(false);
+  const drag3DStartRef = useRef({ x: 0, y: 0, rx: -8, ry: 18 });
+
   const [newSongInput, setNewSongInput] = useState("");
   const [addError, setAddError] = useState("");
   const [isAdding, setIsAdding] = useState(false);
@@ -198,6 +209,36 @@ function Index() {
     };
   }, [isKnobDragging, p]);
 
+  // 3D Radio Orbit Dragging System
+  const handle3DMouseDown = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button, input, [role="slider"], a')) return;
+    setIs3DDragging(true);
+    drag3DStartRef.current = { x: e.clientX, y: e.clientY, rx: rotX, ry: rotY };
+  };
+
+  useEffect(() => {
+    const handle3DMouseMove = (e: MouseEvent) => {
+      if (!is3DDragging) return;
+      const dx = e.clientX - drag3DStartRef.current.x;
+      const dy = e.clientY - drag3DStartRef.current.y;
+      setRotY(drag3DStartRef.current.ry + dx * 0.45);
+      setRotX(Math.max(-55, Math.min(55, drag3DStartRef.current.rx - dy * 0.45)));
+    };
+
+    const handle3DMouseUp = () => {
+      if (is3DDragging) setIs3DDragging(false);
+    };
+
+    if (is3DDragging) {
+      window.addEventListener("mousemove", handle3DMouseMove);
+      window.addEventListener("mouseup", handle3DMouseUp);
+    }
+    return () => {
+      window.removeEventListener("mousemove", handle3DMouseMove);
+      window.removeEventListener("mouseup", handle3DMouseUp);
+    };
+  }, [is3DDragging]);
+
   const knobAngle = (p.muted ? 0 : p.volume / 100) * 270 - 135;
 
   return (
@@ -233,7 +274,7 @@ function Index() {
       <div className="absolute inset-0 bg-[#0c0d10]/75 pointer-events-none" />
 
       {/* ========================================================================= */}
-      {/* TOP HEADER BAR: STATION STATUS & EXTERNAL PLAYLIST LINKS */}
+      {/* TOP HEADER BAR: STATION STATUS & 3D RADIO VIEW BUTTON */}
       {/* ========================================================================= */}
       <header className="absolute inset-x-0 top-0 z-20 flex items-center justify-between border-b border-[#282c35] bg-[#111317]/90 px-5 py-2.5 text-xs text-zinc-300 backdrop-blur-md">
         <div className="flex items-center gap-3">
@@ -267,12 +308,22 @@ function Index() {
           </div>
         )}
 
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center gap-3 sm:gap-4">
+          {/* 3D VINTAGE RADIO BUTTON */}
+          <button
+            onClick={() => setThreeDOpen(true)}
+            title="Inspect, rotate, and interact with the 3D Vintage Radio Cabinet"
+            className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#d4af37] hover:bg-[#fde047] text-zinc-950 font-mono-ui font-bold text-xs border border-amber-300 transition-colors shadow-md cursor-pointer"
+          >
+            <Box className="size-3.5 text-zinc-950" />
+            3D RADIO VIEW
+          </button>
+
           <a
             href={YTM_PLAYLIST}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-zinc-400 transition-colors hover:text-zinc-100 font-mono-ui text-[0.7rem]"
+            className="hidden sm:inline-flex items-center gap-1 text-zinc-400 transition-colors hover:text-zinc-100 font-mono-ui text-[0.7rem]"
           >
             YouTube Music
             <ArrowUpRight className="size-3" aria-hidden="true" />
@@ -281,7 +332,7 @@ function Index() {
             href={YT_PLAYLIST}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1 text-zinc-400 transition-colors hover:text-zinc-100 font-mono-ui text-[0.7rem]"
+            className="hidden sm:inline-flex items-center gap-1 text-zinc-400 transition-colors hover:text-zinc-100 font-mono-ui text-[0.7rem]"
           >
             YouTube
             <ArrowUpRight className="size-3" aria-hidden="true" />
@@ -323,8 +374,446 @@ function Index() {
             <ListMusic className="size-3.5 text-zinc-300" />
             QUEUE [{total}]
           </button>
+          <button
+            onClick={() => setThreeDOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#2b1f14] hover:bg-[#3d2f20] border border-[#78350f] text-amber-200 font-semibold transition-colors cursor-pointer"
+          >
+            <Box className="size-3.5 text-amber-400" />
+            INSPECT 3D
+          </button>
         </div>
       </main>
+
+      {/* ========================================================================= */}
+      {/* 🌟 3D INTERACTIVE VINTAGE RADIO CABINET MODAL 🌟 */}
+      {/* ========================================================================= */}
+      {threeDOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-xl overflow-hidden select-none">
+          {/* Top 3D Control Strip */}
+          <div className="flex items-center justify-between border-b border-[#3d2f20] bg-[#130f0a] px-5 py-3 text-xs text-amber-200">
+            <div className="flex items-center gap-3">
+              <Box className="size-4 text-amber-400" />
+              <div>
+                <h2 className="font-mono-ui text-xs font-bold uppercase tracking-widest text-amber-100">
+                  RMDU 3D VINTAGE FIELD RADIO • TYPE RM-003
+                </h2>
+                <p className="text-[0.62rem] text-amber-400/70 font-mono-ui">
+                  Drag to rotate in 3D • Scroll to zoom • Click controls to operate
+                </p>
+              </div>
+            </div>
+
+            {/* Quick 3D View Presets */}
+            <div className="hidden sm:flex items-center gap-1.5 font-mono-ui text-[0.68rem]">
+              <button
+                onClick={() => { setRotX(0); setRotY(0); setZoom(1); }}
+                className="px-2.5 py-1 bg-[#241a11] hover:bg-[#38281b] border border-[#4a3826] text-amber-200 cursor-pointer"
+              >
+                Front View
+              </button>
+              <button
+                onClick={() => { setRotX(-12); setRotY(24); setZoom(1); }}
+                className="px-2.5 py-1 bg-[#241a11] hover:bg-[#38281b] border border-[#4a3826] text-amber-200 cursor-pointer"
+              >
+                3/4 Angle
+              </button>
+              <button
+                onClick={() => { setRotX(-35); setRotY(0); setZoom(1); }}
+                className="px-2.5 py-1 bg-[#241a11] hover:bg-[#38281b] border border-[#4a3826] text-amber-200 cursor-pointer"
+              >
+                Top Down
+              </button>
+              <button
+                onClick={() => { setRotX(0); setRotY(90); setZoom(1); }}
+                className="px-2.5 py-1 bg-[#241a11] hover:bg-[#38281b] border border-[#4a3826] text-amber-200 cursor-pointer"
+              >
+                Side Profile
+              </button>
+              <button
+                onClick={() => setAntennaExtended((v) => !v)}
+                className={`px-2.5 py-1 border cursor-pointer ${
+                  antennaExtended
+                    ? "bg-amber-800 text-amber-100 border-amber-500"
+                    : "bg-[#241a11] text-amber-300 border-[#4a3826]"
+                }`}
+              >
+                📡 Antenna: {antennaExtended ? "EXTENDED" : "COLLAPSED"}
+              </button>
+            </div>
+
+            <button
+              onClick={() => setThreeDOpen(false)}
+              className="p-1.5 bg-[#2b1f14] hover:bg-[#42301f] border border-[#543e27] text-amber-200 hover:text-white cursor-pointer"
+              aria-label="Close 3D View"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+
+          {/* 3D Interactive Stage Canvas */}
+          <div
+            onMouseDown={handle3DMouseDown}
+            onWheel={(e) => {
+              e.preventDefault();
+              setZoom((prev) => Math.max(0.65, Math.min(1.5, prev + (e.deltaY < 0 ? 0.05 : -0.05))));
+            }}
+            className="perspective-1200 relative flex-1 flex items-center justify-center cursor-grab active:cursor-grabbing overflow-hidden"
+          >
+            {/* Ambient Ground Grid Plate */}
+            <div
+              className="absolute w-[800px] h-[800px] rounded-full opacity-20 pointer-events-none"
+              style={{
+                background: "radial-gradient(circle, #f59e0b 0%, transparent 70%)",
+                transform: "translateY(220px) rotateX(90deg)",
+              }}
+            />
+
+            {/* 3D Radio Chassis Root Box */}
+            <div
+              className="radio-3d-chassis preserve-3d relative"
+              style={{
+                width: "480px",
+                height: "300px",
+                transform: `scale(${zoom}) rotateX(${rotX}deg) rotateY(${rotY}deg)`,
+              }}
+            >
+              {/* ========================================================= */}
+              {/* 📡 TELESCOPIC CHROME ANTENNA (EXTENDS FROM TOP-LEFT) 📡 */}
+              {/* ========================================================= */}
+              <div
+                className="absolute preserve-3d pointer-events-auto cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setAntennaExtended((v) => !v);
+                }}
+                style={{
+                  top: "-15px",
+                  left: "35px",
+                  transform: "translateZ(30px)",
+                }}
+                title="Click to extend / collapse antenna"
+              >
+                {/* Antenna Swivel Base Joint */}
+                <div className="size-4 rounded-full bg-zinc-400 border border-zinc-700 shadow-md" />
+
+                {/* Telescopic Antenna Shaft with Multi-Stage Segments */}
+                <div
+                  className="origin-bottom transition-all duration-500"
+                  style={{
+                    transform: `rotate(${antennaAngle}deg) scaleY(${antennaExtended ? 1 : 0.25})`,
+                  }}
+                >
+                  {/* Segment 1 (Base Tube) */}
+                  <div className="w-2.5 h-20 telescopic-antenna border border-zinc-500 rounded-t-sm relative">
+                    {/* Segment 2 (Middle Tube) */}
+                    <div className="w-2 h-20 telescopic-antenna border border-zinc-500 rounded-t-sm absolute -top-20 left-0.5">
+                      {/* Segment 3 (Top Tube) */}
+                      <div className="w-1.5 h-24 telescopic-antenna border border-zinc-500 rounded-t-sm absolute -top-24 left-[1px]">
+                        {/* Red Antenna Tip Ball */}
+                        <div className="size-3 rounded-full bg-red-600 border border-red-300 absolute -top-2.5 -left-[3px] shadow-md" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ========================================================= */}
+              {/* 📻 FACE 1: FRONT PANEL (SPEAKER, CASSETTE, DIALS, TUNER) 📻 */}
+              {/* ========================================================= */}
+              <div
+                className="chassis-face chassis-face-front w-[480px] h-[300px] p-3.5 flex flex-col justify-between"
+                style={{ transform: "translateZ(75px)" }}
+              >
+                {/* Top Speaker Cloth Grille & Model Badge */}
+                <div className="flex gap-3 h-[130px]">
+                  {/* Acoustic Woven Speaker Cloth Area */}
+                  <div className="retro-speaker-cloth flex-1 p-2 flex flex-col justify-between shadow-inner relative overflow-hidden">
+                    <div className="flex items-center justify-between text-[0.55rem] font-mono-ui text-amber-300 font-bold tracking-widest border-b border-amber-900/60 pb-0.5">
+                      <span>RMDU SPECIAL VALVES</span>
+                      <div className="flex items-center gap-1">
+                        <span className={`size-1.5 ${p.playing ? "bg-emerald-400 animate-pulse" : "bg-zinc-700"}`} />
+                        <span>HI-FI STEREO</span>
+                      </div>
+                    </div>
+
+                    {/* Speaker Mesh Louver Bars */}
+                    <div className="flex flex-col justify-around h-16 opacity-40">
+                      <div className="h-[2px] bg-amber-600/40 w-full" />
+                      <div className="h-[2px] bg-amber-600/40 w-full" />
+                      <div className="h-[2px] bg-amber-600/40 w-full" />
+                      <div className="h-[2px] bg-amber-600/40 w-full" />
+                    </div>
+
+                    <div className="flex justify-between items-center text-[0.52rem] font-mono-ui text-amber-400">
+                      <span>TYPE RM-003</span>
+                      <span className="text-[0.48rem] text-amber-500">SOLID STATE RECEIVER</span>
+                    </div>
+                  </div>
+
+                  {/* Cassette Deck Viewing Compartment */}
+                  <div className="w-[150px] border-2 border-[#4a3826] bg-[#0c0906] p-1.5 flex flex-col justify-between shadow-inner relative">
+                    <div className="flex justify-between text-[0.50rem] font-mono-ui text-amber-400 font-bold">
+                      <span>CASSETTE DECK</span>
+                      <span>AUTO STOP</span>
+                    </div>
+
+                    {/* Spinning Cassette Tape Spools Window */}
+                    <div className="relative h-14 bg-zinc-950 border border-amber-900/60 overflow-hidden flex items-center justify-around px-2">
+                      {currentCover && (
+                        <img
+                          src={currentCover}
+                          alt="Cover"
+                          className="absolute inset-0 size-full object-cover opacity-20 filter blur-[1px]"
+                        />
+                      )}
+                      {/* Left Spool */}
+                      <div className={`size-6 rounded-full border-2 border-amber-400 bg-zinc-900 flex items-center justify-center relative ${p.playing ? "animate-spool" : "animate-spool-paused"}`}>
+                        <div className="size-2 rounded-full bg-amber-500" />
+                        <div className="absolute w-full h-[1px] bg-amber-200/60" />
+                        <div className="absolute h-full w-[1px] bg-amber-200/60" />
+                      </div>
+                      {/* Tape bridge */}
+                      <div className="h-[2px] w-5 bg-zinc-600" />
+                      {/* Right Spool */}
+                      <div className={`size-6 rounded-full border-2 border-amber-400 bg-zinc-900 flex items-center justify-center relative ${p.playing ? "animate-spool" : "animate-spool-paused"}`}>
+                        <div className="size-2 rounded-full bg-amber-500" />
+                        <div className="absolute w-full h-[1px] bg-amber-200/60" />
+                        <div className="absolute h-full w-[1px] bg-amber-200/60" />
+                      </div>
+                    </div>
+
+                    <div className="truncate text-[0.58rem] text-amber-200 font-medium text-center">
+                      {p.current?.title ?? "Standby"}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Middle: Multi-Band Glass Radio Frequency Scale */}
+                <div
+                  role="slider"
+                  tabIndex={0}
+                  aria-label="3D Radio Tuner Scale"
+                  aria-valuenow={Math.round(progress)}
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                    p.seek(ratio * p.duration);
+                  }}
+                  className="retro-multi-tuner-glass h-12 p-1 relative overflow-hidden cursor-pointer select-none"
+                >
+                  <div className="flex flex-col justify-between h-full text-[0.44rem] font-mono-ui text-[#e6ca65] px-1 leading-none">
+                    <div className="flex justify-between font-bold text-[#fde047]">
+                      <span className="text-[#d4af37]">AM</span>
+                      <span>1600</span><span>1400</span><span>1200</span><span>1000</span><span>800</span><span>600</span><span>550 kHz</span>
+                    </div>
+                    <div className="flex justify-between text-[#ca8a04]">
+                      <span className="text-[#a16207]">KANAL</span>
+                      <span>40</span><span>35</span><span>30</span><span>25</span><span>20</span><span>15</span><span>10</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-[#fef08a] border-t border-amber-900/60 pt-0.5">
+                      <span className="text-[#eab308]">FM</span>
+                      <span>88</span><span>92</span><span>96</span><span>100</span><span>104</span><span>108 MHz</span>
+                    </div>
+                  </div>
+
+                  {/* Red Tuning Needle */}
+                  <div
+                    className="absolute top-0 bottom-0 w-[2px] bg-[#ef4444] transition-all duration-100 pointer-events-none z-10"
+                    style={{ left: `${progress}%` }}
+                  >
+                    <div className="absolute top-0 -left-[2px] w-1.5 h-1 bg-[#ef4444]" />
+                    <div className="absolute bottom-0 -left-[2px] w-1.5 h-1 bg-[#ef4444]" />
+                  </div>
+                </div>
+
+                {/* Bottom Controls: Dials & Piano Keys */}
+                <div className="flex items-center gap-2">
+                  {/* Left Volume Dial */}
+                  <div
+                    onWheel={(e) => {
+                      e.preventDefault();
+                      p.setVolume(p.volume + (e.deltaY < 0 ? 5 : -5));
+                    }}
+                    title="Volume (Scroll or Click)"
+                    className="size-11 rounded-full bg-[#f59e0b] border-2 border-black flex items-center justify-center relative cursor-pointer shrink-0 shadow-inner"
+                  >
+                    <div
+                      className="size-6 rounded-full bg-[#1c1813] border border-black flex items-center justify-center"
+                      style={{ transform: `rotate(${knobAngle}deg)` }}
+                    >
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-[2px] h-2.5 bg-black" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => { e.stopPropagation(); p.toggleMute(); }}
+                      className="absolute size-2.5 rounded-full bg-[#3d2f20] border border-amber-400"
+                    />
+                  </div>
+
+                  {/* Piano Keys Bar */}
+                  <div className="flex-1 flex gap-1">
+                    <button
+                      onClick={p.prev}
+                      title="Previous"
+                      className="retro-piano-key flex-1 py-1 text-[0.60rem] font-bold font-mono-ui flex items-center justify-center cursor-pointer"
+                    >
+                      ⏮
+                    </button>
+                    <button
+                      onClick={p.toggle}
+                      title={p.playing ? "Pause" : "Play"}
+                      className={`retro-piano-key flex-[1.4] py-1 text-[0.65rem] font-bold font-mono-ui flex items-center justify-center cursor-pointer ${
+                        p.playing ? "active-key bg-[#dfd8c5]" : ""
+                      }`}
+                    >
+                      {p.playing ? "⏸ PAUSE" : "▶ PLAY"}
+                    </button>
+                    <button
+                      onClick={p.next}
+                      title="Next"
+                      className="retro-piano-key flex-1 py-1 text-[0.60rem] font-bold font-mono-ui flex items-center justify-center cursor-pointer"
+                    >
+                      ⏭
+                    </button>
+                    <button
+                      onClick={() => p.setShuffle(!p.shuffle)}
+                      title="Shuffle"
+                      className={`retro-piano-key flex-1 py-1 text-[0.60rem] font-bold font-mono-ui flex items-center justify-center cursor-pointer ${
+                        p.shuffle ? "active-key bg-[#d8f3dc]" : ""
+                      }`}
+                    >
+                      🔀
+                    </button>
+                    <button
+                      onClick={p.toggleRepeat}
+                      title="Loop"
+                      className={`retro-piano-key flex-1 py-1 text-[0.60rem] font-bold font-mono-ui flex items-center justify-center cursor-pointer ${
+                        p.repeatMode !== "off" ? "active-key bg-[#fee2e2]" : ""
+                      }`}
+                    >
+                      🔁
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* ========================================================= */}
+              {/* 📻 FACE 2: BACK PANEL (VENTS, BATTERY, AC/DC SWITCH) 📻 */}
+              {/* ========================================================= */}
+              <div
+                className="chassis-face chassis-face-back w-[480px] h-[300px] p-6 flex flex-col justify-between text-[#856b50]"
+                style={{ transform: "rotateY(180deg) translateZ(75px)" }}
+              >
+                <div className="flex justify-between border-b border-[#3d2f20] pb-2">
+                  <div className="font-mono-ui text-xs font-bold text-amber-200">
+                    RMDU VALVE CHASSIS • TYPE 003
+                  </div>
+                  <div className="font-mono-ui text-[0.60rem]">220V AC / 12V DC • 50-60Hz</div>
+                </div>
+
+                {/* Perforated Backboard Cooling Vent Area */}
+                <div className="border border-[#3d2f20] p-3 bg-black/40 flex flex-col gap-1.5">
+                  <div className="text-[0.55rem] font-mono-ui text-center text-amber-400">
+                    CAUTION: RISK OF ELECTRIC SHOCK • DO NOT OPEN COVER
+                  </div>
+                  <div className="flex justify-between px-4 text-[0.50rem] font-mono-ui">
+                    <span>EXT ANTENNA: 75Ω / 300Ω</span>
+                    <span>EARTH GROUND</span>
+                    <span>TAPE OUT: 0dB</span>
+                  </div>
+                </div>
+
+                {/* Battery Compartment Cover */}
+                <div className="border-2 border-[#3d2f20] bg-[#1a140e] p-2 flex justify-between items-center text-xs font-mono-ui">
+                  <span>BATTERY COMPARTMENT (6 × 1.5V D-CELL)</span>
+                  <span className="border border-[#4a3826] px-2 py-0.5 text-[0.60rem] bg-black">LATCH</span>
+                </div>
+              </div>
+
+              {/* ========================================================= */}
+              {/* 📻 FACE 3: TOP PANEL (CARRYING HANDLE & VENTILATION) 📻 */}
+              {/* ========================================================= */}
+              <div
+                className="chassis-face chassis-face-top w-[480px] h-[150px] p-3 flex flex-col justify-between"
+                style={{ transform: "rotateX(90deg) translateZ(75px)" }}
+              >
+                {/* Top Chrome Carrying Handle */}
+                <div className="w-full flex items-center justify-center my-auto">
+                  <div className="w-[320px] h-6 bg-[#1a1510] border-2 border-zinc-500 shadow-md flex items-center justify-between px-3">
+                    <div className="size-3 bg-zinc-400 border border-black rounded-full" />
+                    <span className="font-mono-ui text-[0.55rem] font-bold text-zinc-300 tracking-widest">
+                      RMDU SOLID-STATE
+                    </span>
+                    <div className="size-3 bg-zinc-400 border border-black rounded-full" />
+                  </div>
+                </div>
+
+                <div className="flex justify-between text-[0.50rem] font-mono-ui text-amber-400 border-t border-[#4a3826] pt-1">
+                  <span>TOP COOLING LOUVERS</span>
+                  <span>ANTENNA SWIVEL JOINT</span>
+                </div>
+              </div>
+
+              {/* ========================================================= */}
+              {/* 📻 FACE 4: BOTTOM PANEL (SOLID RUBBER FEET) 📻 */}
+              {/* ========================================================= */}
+              <div
+                className="chassis-face chassis-face-bottom w-[480px] h-[150px] p-4 flex justify-between items-center"
+                style={{ transform: "rotateX(-90deg) translateZ(225px)" }}
+              >
+                <div className="size-5 rounded-full bg-zinc-900 border-2 border-black" />
+                <div className="size-5 rounded-full bg-zinc-900 border-2 border-black" />
+                <div className="font-mono-ui text-[0.60rem] text-zinc-600">SERIAL NO: RMDU-2026-VINTAGE</div>
+                <div className="size-5 rounded-full bg-zinc-900 border-2 border-black" />
+                <div className="size-5 rounded-full bg-zinc-900 border-2 border-black" />
+              </div>
+
+              {/* ========================================================= */}
+              {/* 📻 FACE 5: LEFT SIDE PANEL (WOOD / STEEL STRAP LUG) 📻 */}
+              {/* ========================================================= */}
+              <div
+                className="chassis-face chassis-face-left w-[150px] h-[300px] p-3 flex flex-col justify-between items-center"
+                style={{ transform: "rotateY(-90deg) translateZ(75px)" }}
+              >
+                <div className="size-4 rounded-full bg-amber-400 border border-black shadow-md mt-4" />
+                <div className="font-mono-ui text-[0.55rem] text-amber-300 font-bold -rotate-90 tracking-widest">
+                  TELEFUNKEN
+                </div>
+                <div className="w-8 h-4 border border-[#4a3826] bg-black/50 text-[0.45rem] font-mono-ui text-center text-amber-400 flex items-center justify-center">
+                  12V DC
+                </div>
+              </div>
+
+              {/* ========================================================= */}
+              {/* 📻 FACE 6: RIGHT SIDE PANEL (FINE TUNING THUMBWHEEL) 📻 */}
+              {/* ========================================================= */}
+              <div
+                className="chassis-face chassis-face-right w-[150px] h-[300px] p-3 flex flex-col justify-between items-center"
+                style={{ transform: "rotateY(90deg) translateZ(405px)" }}
+              >
+                <div className="size-4 rounded-full bg-amber-400 border border-black shadow-md mt-4" />
+                
+                {/* Knurled Side Tuning Thumbwheel */}
+                <div
+                  onWheel={(e) => {
+                    e.preventDefault();
+                    p.seek(p.time + (e.deltaY < 0 ? 5 : -5));
+                  }}
+                  title="Side Tuning Dial (Scroll)"
+                  className="w-5 h-20 bg-[#1c1813] border-2 border-[#5c4724] rounded-sm flex flex-col justify-around items-center cursor-pointer shadow-lg py-1"
+                >
+                  <div className="w-full h-[1px] bg-amber-400/40" />
+                  <div className="w-full h-[1px] bg-amber-400/40" />
+                  <div className="w-full h-[1px] bg-amber-400/40" />
+                  <div className="w-full h-[1px] bg-amber-400/40" />
+                </div>
+
+                <div className="font-mono-ui text-[0.50rem] text-amber-300">TUNING</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ========================================================================= */}
       {/* CRT MONITOR VIDEO FEED FLOATING MODAL */}
