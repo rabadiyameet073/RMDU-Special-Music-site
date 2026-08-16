@@ -119,80 +119,97 @@
 }
 
 /* ========================================================================= */
-/* 📻 VINTAGE INDUSTRIAL SQUARE RADIO AUDIO HARDWARE SYSTEM 📻 */
+/* 📻 AUTHENTIC VINTAGE RADIO HARDWARE SYSTEM (GROUNDED IN RETRO REFERENCES) 📻 */
 /* ========================================================================= */
 
 .retro-radio-body {
-  background-color: #111317;
-  border: 1px solid #333844;
+  background-color: #1a1510;
+  border: 2px solid #3d2f20;
   box-shadow: 
-    0 24px 60px rgba(0, 0, 0, 0.95),
-    0 6px 16px rgba(0, 0, 0, 0.85),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 24px 70px rgba(0, 0, 0, 0.98),
+    0 8px 24px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(245, 158, 11, 0.15),
     inset 0 -2px 0 rgba(0, 0, 0, 0.9);
 }
 
-.retro-speaker-grille {
-  background-color: #0a0b0e;
-  border: 1px solid #23262f;
+.retro-wood-trim {
+  background-color: #2b1f14;
+  border: 1px solid #4a3826;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
-.retro-tuner-glass {
-  background-color: #07080a;
-  border: 1px solid #232731;
+.retro-speaker-cloth {
+  background-color: #221c16;
+  background-image: 
+    linear-gradient(90deg, rgba(217, 119, 6, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(217, 119, 6, 0.08) 1px, transparent 1px);
+  background-size: 4px 4px;
+  border: 1px solid #382c20;
+}
+
+.retro-multi-tuner-glass {
+  background-color: #0c0906;
+  border: 1px solid #3b2c1c;
   box-shadow:
-    inset 0 3px 8px rgba(0, 0, 0, 0.95),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+    inset 0 4px 14px rgba(0, 0, 0, 0.98),
+    inset 0 0 0 1px rgba(245, 158, 11, 0.1);
 }
 
-.retro-knob {
-  background-color: #21242c;
-  border: 1px solid #3d4352;
-  box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.8);
+/* Authentic Piano-Key Mechanical Switches */
+.retro-piano-key {
+  background-color: #ede8db;
+  color: #1a1612;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ded6c3;
+  border-right: 1px solid #a89f89;
+  border-bottom: 3px solid #736b56;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+  transition: all 0.08s ease;
 }
 
-.retro-pushbutton {
-  background-color: #171920;
-  color: #d1d5db;
-  border: 1px solid #2d323e;
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.8);
+.retro-piano-key:hover {
+  background-color: #f7f3e9;
 }
 
-.retro-pushbutton:hover {
-  background-color: #21242d;
+.retro-piano-key:active,
+.retro-piano-key.active-key {
+  transform: translateY(2px);
+  background-color: #dfd8c5;
+  border-bottom-width: 1px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.retro-piano-key-red {
+  background-color: #e5e0d3;
+  color: #dc2626;
+}
+
+.retro-piano-key-red.active-key {
+  background-color: #dc2626;
   color: #ffffff;
-  border-color: #424958;
+  border-color: #991b1b;
 }
 
-.retro-pushbutton:active {
-  transform: translateY(1px);
-  background-color: #101217;
-  border-color: #1f2229;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
-}
-
-.retro-main-play {
-  background-color: #e5e7eb;
-  color: #0d0e11;
-  border: 1px solid #9ca3af;
+.retro-knurled-dial {
+  background-color: #1c1813;
+  border: 2px solid #4a3b2b;
   box-shadow:
-    0 3px 8px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+    0 4px 10px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.9);
 }
 
-.retro-main-play:hover {
-  background-color: #ffffff;
-  border-color: #ffffff;
+/* Cassette Spool Rotation */
+@keyframes spool-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.retro-main-play:active {
-  transform: translateY(1px);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+.animate-spool {
+  animation: spool-spin 2.8s linear infinite;
+}
+
+.animate-spool-paused {
+  animation: spool-spin 2.8s linear infinite;
+  animation-play-state: paused;
 }
