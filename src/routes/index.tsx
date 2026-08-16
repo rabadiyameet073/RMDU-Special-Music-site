@@ -168,20 +168,24 @@ function Index() {
     setDraggedIndex(null);
   };
 
-  // Rotary Knob Drag Handling
+  // Rotary Knob Drag & Touch Handling
   const handleKnobMouseDown = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsKnobDragging(true);
   };
 
+  const handleKnobTouchStart = (e: React.TouchEvent) => {
+    setIsKnobDragging(true);
+  };
+
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isKnobDragging || !knobRef.current) return;
+    const updateKnobFromPos = (clientX: number, clientY: number) => {
+      if (!knobRef.current) return;
       const rect = knobRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
-      const dx = e.clientX - centerX;
-      const dy = e.clientY - centerY;
+      const dx = clientX - centerX;
+      const dy = clientY - centerY;
       let angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
       if (angle < 0) angle += 360;
 
@@ -198,6 +202,17 @@ function Index() {
       p.setVolume(Math.round(normalized * 100));
     };
 
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isKnobDragging) return;
+      updateKnobFromPos(e.clientX, e.clientY);
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!isKnobDragging || e.touches.length === 0) return;
+      e.preventDefault();
+      updateKnobFromPos(e.touches[0].clientX, e.touches[0].clientY);
+    };
+
     const handleMouseUp = () => {
       if (isKnobDragging) setIsKnobDragging(false);
     };
@@ -205,17 +220,32 @@ function Index() {
     if (isKnobDragging) {
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("touchmove", handleTouchMove, { passive: false });
+      window.addEventListener("touchend", handleMouseUp);
     }
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleMouseUp);
     };
   }, [isKnobDragging]);
 
-  // 3D Radio Orbit Drag Handling
+  // 3D Radio Orbit Drag & Mobile Touch Handling
   const handle3DMouseDown = (e: React.MouseEvent) => {
     setIs3DDragging(true);
     drag3DStartRef.current = { x: e.clientX, y: e.clientY, rx: rotX, ry: rotY };
+  };
+
+  const handle3DTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 0) return;
+    setIs3DDragging(true);
+    drag3DStartRef.current = {
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY,
+      rx: rotX,
+      ry: rotY,
+    };
   };
 
   useEffect(() => {
@@ -227,6 +257,15 @@ function Index() {
       setRotX(Math.max(-55, Math.min(55, drag3DStartRef.current.rx - dy * 0.45)));
     };
 
+    const handle3DTouchMove = (e: TouchEvent) => {
+      if (!is3DDragging || e.touches.length === 0) return;
+      e.preventDefault();
+      const dx = e.touches[0].clientX - drag3DStartRef.current.x;
+      const dy = e.touches[0].clientY - drag3DStartRef.current.y;
+      setRotY(drag3DStartRef.current.ry + dx * 0.55);
+      setRotX(Math.max(-55, Math.min(55, drag3DStartRef.current.rx - dy * 0.55)));
+    };
+
     const handle3DMouseUp = () => {
       if (is3DDragging) setIs3DDragging(false);
     };
@@ -234,10 +273,14 @@ function Index() {
     if (is3DDragging) {
       window.addEventListener("mousemove", handle3DMouseMove);
       window.addEventListener("mouseup", handle3DMouseUp);
+      window.addEventListener("touchmove", handle3DTouchMove, { passive: false });
+      window.addEventListener("touchend", handle3DMouseUp);
     }
     return () => {
       window.removeEventListener("mousemove", handle3DMouseMove);
       window.removeEventListener("mouseup", handle3DMouseUp);
+      window.removeEventListener("touchmove", handle3DTouchMove);
+      window.removeEventListener("touchend", handle3DMouseUp);
     };
   }, [is3DDragging]);
 
@@ -471,18 +514,22 @@ function Index() {
             </button>
           </div>
 
-          {/* 3D Interactive Stage Canvas */}
+          {/* 3D Interactive Stage Canvas with Mobile Touch Support */}
           <div
             onMouseDown={(e) => {
               setIsInitial3DLoad(false);
               handle3DMouseDown(e);
+            }}
+            onTouchStart={(e) => {
+              setIsInitial3DLoad(false);
+              handle3DTouchStart(e);
             }}
             onWheel={(e) => {
               setIsInitial3DLoad(false);
               e.preventDefault();
               setZoom((prev) => Math.max(0.65, Math.min(1.5, prev + (e.deltaY < 0 ? 0.05 : -0.05))));
             }}
-            className="perspective-1200 relative flex-1 flex items-center justify-center cursor-grab active:cursor-grabbing overflow-hidden"
+            className="perspective-1200 relative flex-1 flex items-center justify-center cursor-grab active:cursor-grabbing overflow-hidden touch-none"
           >
             {/* Ambient Ground Grid Plate */}
             <div
@@ -493,36 +540,38 @@ function Index() {
               }}
             />
 
-            {/* 3D Radio Chassis Root Box with Screen-to-3D Pullback Animation */}
-            <div
-              className={`radio-3d-chassis preserve-3d relative ${
-                isInitial3DLoad ? "animate-screen-to-3d" : ""
-              }`}
-              onAnimationEnd={() => setIsInitial3DLoad(false)}
-              style={{
-                width: "480px",
-                height: "300px",
-                transform: isInitial3DLoad
-                  ? undefined
-                  : `scale(${zoom}) rotateX(${rotX}deg) rotateY(${rotY}deg)`,
-              }}
-            >
-              {/* ========================================================= */}
-              {/* 📡 TELESCOPIC CHROME ANTENNA (EXTENDS FROM TOP-LEFT) 📡 */}
-              {/* ========================================================= */}
+            {/* Responsive Scale Wrapper for Mobile Devices */}
+            <div className="scale-[0.68] xs:scale-[0.82] sm:scale-100 transition-transform origin-center">
+              {/* 3D Radio Chassis Root Box with Screen-to-3D Pullback Animation */}
               <div
-                className="absolute preserve-3d pointer-events-auto cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setAntennaExtended((v) => !v);
-                }}
+                className={`radio-3d-chassis preserve-3d relative ${
+                  isInitial3DLoad ? "animate-screen-to-3d" : ""
+                }`}
+                onAnimationEnd={() => setIsInitial3DLoad(false)}
                 style={{
-                  top: "-15px",
-                  left: "35px",
-                  transform: "translateZ(30px)",
+                  width: "480px",
+                  height: "300px",
+                  transform: isInitial3DLoad
+                    ? undefined
+                    : `scale(${zoom}) rotateX(${rotX}deg) rotateY(${rotY}deg)`,
                 }}
-                title="Click to extend / collapse antenna"
               >
+                {/* ========================================================= */}
+                {/* 📡 TELESCOPIC CHROME ANTENNA (EXTENDS FROM TOP-LEFT) 📡 */}
+                {/* ========================================================= */}
+                <div
+                  className="absolute preserve-3d pointer-events-auto cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAntennaExtended((v) => !v);
+                  }}
+                  style={{
+                    top: "-15px",
+                    left: "35px",
+                    transform: "translateZ(30px)",
+                  }}
+                  title="Click to extend / collapse antenna"
+                >
                 {/* Antenna Swivel Base Joint */}
                 <div className="size-4 rounded-full bg-zinc-400 border border-zinc-700 shadow-md" />
 
@@ -852,6 +901,45 @@ function Index() {
                 <div className="font-mono-ui text-[0.50rem] text-amber-300">TUNING</div>
               </div>
             </div>
+            </div>
+          </div>
+
+          {/* Mobile Quick 3D View Presets Toolbar */}
+          <div className="flex sm:hidden items-center justify-around gap-1 p-2 bg-[#130f0a] border-t border-[#3d2f20] font-mono-ui text-[0.62rem]">
+            <button
+              onClick={() => { setIsInitial3DLoad(false); setRotX(0); setRotY(0); setZoom(1); }}
+              className="px-2 py-1 bg-[#241a11] border border-[#4a3826] text-amber-200"
+            >
+              Front
+            </button>
+            <button
+              onClick={() => { setIsInitial3DLoad(false); setRotX(-12); setRotY(24); setZoom(1); }}
+              className="px-2 py-1 bg-[#241a11] border border-[#4a3826] text-amber-200"
+            >
+              3/4 Angle
+            </button>
+            <button
+              onClick={() => { setIsInitial3DLoad(false); setRotX(-35); setRotY(0); setZoom(1); }}
+              className="px-2 py-1 bg-[#241a11] border border-[#4a3826] text-amber-200"
+            >
+              Top
+            </button>
+            <button
+              onClick={() => { setIsInitial3DLoad(false); setRotX(0); setRotY(90); setZoom(1); }}
+              className="px-2 py-1 bg-[#241a11] border border-[#4a3826] text-amber-200"
+            >
+              Side
+            </button>
+            <button
+              onClick={() => setAntennaExtended((v) => !v)}
+              className={`px-2 py-1 border ${
+                antennaExtended
+                  ? "bg-amber-800 text-amber-100 border-amber-500"
+                  : "bg-[#241a11] text-amber-300 border-[#4a3826]"
+              }`}
+            >
+              📡 {antennaExtended ? "Antenna ◀" : "Antenna ▶"}
+            </button>
           </div>
         </div>
       )}
@@ -1221,7 +1309,7 @@ function Index() {
             </div>
 
             {/* 3. Authentic Multi-Band Glass Radio Tuner (AM / SW / FM / KANAL Scales) */}
-            <div className="hidden min-w-0 flex-1 flex-col gap-0.5 md:flex">
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
               <div
                 ref={barRef}
                 role="slider"
@@ -1239,32 +1327,28 @@ function Index() {
                   const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
                   p.seek(ratio * p.duration);
                 }}
-                className="group relative h-11 flex-1 cursor-pointer retro-multi-tuner-glass p-1 select-none overflow-hidden"
+                className="group relative h-9 sm:h-11 flex-1 cursor-pointer retro-multi-tuner-glass p-0.5 sm:p-1 select-none overflow-hidden"
               >
                 {/* Horizontal Scale Bands Background */}
-                <div className="flex flex-col justify-between h-full text-[0.48rem] font-mono-ui text-[#e6ca65] pointer-events-none px-1 tracking-wider leading-none">
+                <div className="flex flex-col justify-between h-full text-[0.42rem] sm:text-[0.48rem] font-mono-ui text-[#e6ca65] pointer-events-none px-1 tracking-wider leading-none">
                   {/* Band 1: AM Scale */}
                   <div className="flex justify-between font-bold text-[#fde047]">
                     <span className="text-[#d4af37]">AM</span>
-                    <span>1600</span>
+                    <span className="hidden xs:inline">1600</span>
                     <span>1400</span>
-                    <span>1200</span>
+                    <span className="hidden xs:inline">1200</span>
                     <span>1000</span>
-                    <span>800</span>
-                    <span>700</span>
+                    <span className="hidden xs:inline">800</span>
                     <span>600</span>
                     <span>550 kHz</span>
                   </div>
 
-                  {/* Band 2: KANAL Scale */}
-                  <div className="flex justify-between text-[#ca8a04]">
+                  {/* Band 2: KANAL Scale (Hidden on Tiny Mobile Screens to avoid crowding) */}
+                  <div className="hidden xs:flex justify-between text-[#ca8a04]">
                     <span className="text-[#a16207]">KANAL</span>
                     <span>40</span>
-                    <span>35</span>
                     <span>30</span>
-                    <span>25</span>
                     <span>20</span>
-                    <span>15</span>
                     <span>10</span>
                   </div>
 
@@ -1272,10 +1356,10 @@ function Index() {
                   <div className="flex justify-between font-bold text-[#fef08a] border-t border-amber-900/60 pt-0.5">
                     <span className="text-[#eab308]">FM</span>
                     <span>88</span>
-                    <span>92</span>
+                    <span className="hidden xs:inline">92</span>
                     <span>96</span>
                     <span>100</span>
-                    <span>104</span>
+                    <span className="hidden xs:inline">104</span>
                     <span>108 MHz</span>
                   </div>
                 </div>
@@ -1308,15 +1392,15 @@ function Index() {
               </div>
 
               {/* Time Counters and Signal Lock */}
-              <div className="flex items-center justify-between font-mono-ui text-[0.62rem] text-amber-200/80 px-1">
+              <div className="flex items-center justify-between font-mono-ui text-[0.58rem] sm:text-[0.62rem] text-amber-200/80 px-1">
                 <span>{fmt(p.time)}</span>
-                <div className="flex items-center gap-1.5 text-[0.55rem] tracking-wider text-amber-400">
+                <div className="flex items-center gap-1.5 text-[0.52rem] sm:text-[0.55rem] tracking-wider text-amber-400">
                   <Activity
-                    className={`size-3 ${
+                    className={`size-2.5 sm:size-3 ${
                       p.playing ? "animate-pulse text-emerald-400" : "text-amber-700"
                     }`}
                   />
-                  <span>
+                  <span className="truncate max-w-[120px] sm:max-w-none">
                     {p.playing
                       ? `SIGNAL LOCKED • ${p.repeatMode === "one" ? "LOOP 1" : p.repeatMode === "all" ? "LOOP ALL" : "FM STEREO"}`
                       : "TUNER STANDBY"}
@@ -1327,16 +1411,17 @@ function Index() {
             </div>
 
             {/* 4. Left Dial: LAUTSTÄRKE (UIverse Skeuomorphic Precision Rotary Volume Knob) */}
-            <div className="relative flex flex-col items-center justify-center px-1">
+            <div className="relative flex flex-col items-center justify-center px-0.5 sm:px-1">
               <div
                 ref={knobRef}
                 onMouseDown={handleKnobMouseDown}
+                onTouchStart={handleKnobTouchStart}
                 onWheel={(e) => {
                   e.preventDefault();
                   p.setVolume(p.volume + (e.deltaY < 0 ? 5 : -5));
                 }}
                 title={`LAUTSTÄRKE (Volume): ${p.muted ? "MUTED" : `${p.volume}%`} (Click & Drag or Scroll)`}
-                className="uiverse-knob-base relative size-14 sm:size-15 rounded-full flex items-center justify-center select-none cursor-grab active:cursor-grabbing shrink-0"
+                className="uiverse-knob-base relative size-12 sm:size-15 rounded-full flex items-center justify-center select-none cursor-grab active:cursor-grabbing shrink-0"
               >
                 {/* Precision Radial LED Arc & Graduation Scale */}
                 <svg className="absolute inset-0 size-full pointer-events-none" viewBox="0 0 100 100">
