@@ -117,9 +117,8 @@ function Index() {
   const activeRef = useRef<HTMLDivElement | null>(null);
   const knobRef = useRef<HTMLDivElement | null>(null);
 
-  const [hasUserSelectedSong, setHasUserSelectedSong] = useState(false);
   const progress = p.duration ? (p.time / p.duration) * 100 : 0;
-  const isSongActive = Boolean(p.playing || hasUserSelectedSong);
+  const isSongActive = Boolean(p.playing || p.current);
   const activeSongCover =
     p.current?.thumbnail ||
     (p.current?.videoId
