@@ -208,54 +208,35 @@ function Index() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#120a05] font-body select-none">
       {/* ========================================================================= */}
-      {/* 🌟 BACKGROUND SYSTEM: RMDU.JPG WHEN IDLE vs DYNAMIC SONG BANNER WHEN PLAYING 🌟 */}
+      {/* 🌟 BACKGROUND SYSTEM: FULLSCREEN RMDU.JPG WHEN IDLE vs DYNAMIC SONG BANNER WHEN PLAYING 🌟 */}
       {/* ========================================================================= */}
 
-      {/* Layer 1: Standby / Idle Background with RMDU Artwork */}
+      {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork */}
       <div
-        className={`absolute inset-0 size-full flex items-center justify-center transition-all duration-1000 ${
-          p.playing ? "opacity-15 scale-95 filter blur-md" : "opacity-100 scale-100"
+        className={`absolute inset-0 size-full transition-all duration-1000 ${
+          p.playing ? "opacity-20 scale-105 filter blur-md" : "opacity-100 scale-100"
         }`}
       >
-        {/* Soft Ambient Glow */}
-        <div className="absolute size-[550px] sm:size-[700px] rounded-full bg-zinc-800/20 filter blur-3xl" />
-
-        {/* The RMDU Artwork Image (rmdu.jpg) */}
-        <div className="relative z-10 flex flex-col items-center justify-center p-6 text-center max-w-2xl">
-          <div className="relative group">
-            <div className="absolute -inset-4 rounded-3xl bg-zinc-700/20 blur-xl group-hover:bg-zinc-600/30 transition-all duration-700" />
-            <img
-              src={rmduArt}
-              alt="RMDU Special Art"
-              width={560}
-              height={560}
-              className="relative max-h-[44vh] max-w-[85vw] sm:max-h-[52vh] rounded-2xl object-cover border border-zinc-700/50 shadow-[0_20px_50px_rgba(0,0,0,0.9)] transition-transform duration-700 hover:scale-[1.02]"
-            />
-          </div>
-          {!p.playing && (
-            <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-zinc-700/60 bg-black/60 backdrop-blur-md shadow-lg animate-pulse">
-              <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]" />
-              <span className="font-mono-ui text-[0.72rem] tracking-[0.25em] text-zinc-200 uppercase font-semibold">
-                RECEIVER READY • PRESS PLAY
-              </span>
-            </div>
-          )}
-        </div>
+        <img
+          src={rmduArt}
+          alt="RMDU Special Background"
+          className="size-full object-cover object-center"
+        />
       </div>
 
       {/* Layer 2: Dynamic Full-Screen Song Banner Ambient Backdrop (Active when Playing) */}
       {currentCover && (
         <div
-          className={`absolute inset-0 size-full bg-cover bg-center transition-all duration-1000 transform scale-105 filter blur-2xl ${
-            p.playing ? "opacity-60" : "opacity-0"
+          className={`absolute inset-0 size-full bg-cover bg-center transition-all duration-1000 transform scale-105 ${
+            p.playing ? "opacity-70 filter blur-xl" : "opacity-0"
           }`}
           style={{ backgroundImage: `url(${currentCover})` }}
         />
       )}
 
-      {/* Deep Vignette & Darkening Atmosphere Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0f1013]/90 via-[#0f1013]/55 to-[#0f1013]/95 pointer-events-none" />
-      <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_260px_100px_#0f1013]" />
+      {/* Deep Vignette & Contrast Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0f1013]/70 via-[#0f1013]/35 to-[#0f1013]/85 pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_240px_90px_#0f1013]" />
 
       {/* ========================================================================= */}
       {/* 📻 TOP HEADER BAR: STATION STATUS & EXTERNAL PLAYLIST LINKS 📻 */}
