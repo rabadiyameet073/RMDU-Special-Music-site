@@ -119,7 +119,11 @@ function Index() {
 
   const progress = p.duration ? (p.time / p.duration) * 100 : 0;
   const isPlayingOrSelected = Boolean(p.playing || p.current);
-  const activeSongCover = p.current?.thumbnail || (p.current?.id ? `https://i.ytimg.com/vi/${p.current.id}/maxresdefault.jpg` : null);
+  const activeSongCover =
+    p.current?.thumbnail ||
+    (p.current?.videoId
+      ? `https://i.ytimg.com/vi/${p.current.videoId}/hqdefault.jpg`
+      : null);
   const currentCover = activeSongCover || p.tracks[0]?.thumbnail;
 
   useEffect(() => {
@@ -175,7 +179,7 @@ function Index() {
     setIsKnobDragging(true);
   };
 
-  const handleKnobTouchStart = (e: React.TouchEvent) => {
+  const handleKnobTouchStart = () => {
     setIsKnobDragging(true);
   };
 
@@ -209,9 +213,10 @@ function Index() {
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (!isKnobDragging || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      if (!isKnobDragging || !touch) return;
       e.preventDefault();
-      updateKnobFromPos(e.touches[0].clientX, e.touches[0].clientY);
+      updateKnobFromPos(touch.clientX, touch.clientY);
     };
 
     const handleMouseUp = () => {
@@ -239,11 +244,12 @@ function Index() {
   };
 
   const handle3DTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 0) return;
+    const touch = e.touches[0];
+    if (!touch) return;
     setIs3DDragging(true);
     drag3DStartRef.current = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
+      x: touch.clientX,
+      y: touch.clientY,
       rx: rotX,
       ry: rotY,
     };
@@ -259,10 +265,11 @@ function Index() {
     };
 
     const handle3DTouchMove = (e: TouchEvent) => {
-      if (!is3DDragging || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      if (!is3DDragging || !touch) return;
       e.preventDefault();
-      const dx = e.touches[0].clientX - drag3DStartRef.current.x;
-      const dy = e.touches[0].clientY - drag3DStartRef.current.y;
+      const dx = touch.clientX - drag3DStartRef.current.x;
+      const dy = touch.clientY - drag3DStartRef.current.y;
       setRotY(drag3DStartRef.current.ry + dx * 0.55);
       setRotX(Math.max(-55, Math.min(55, drag3DStartRef.current.rx - dy * 0.55)));
     };

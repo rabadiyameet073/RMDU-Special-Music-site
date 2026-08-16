@@ -44,9 +44,10 @@ export function SpaceParticleCanvas() {
       targetMouseY = e.clientY;
     };
     const handleTouchMove = (e: TouchEvent) => {
-      if (e.touches.length > 0) {
-        targetMouseX = e.touches[0].clientX;
-        targetMouseY = e.touches[0].clientY;
+      const touch = e.touches[0];
+      if (touch) {
+        targetMouseX = touch.clientX;
+        targetMouseY = touch.clientY;
       }
     };
     window.addEventListener("mousemove", handleMouseMove);
@@ -58,6 +59,7 @@ export function SpaceParticleCanvas() {
     const particles: Particle[] = [];
 
     for (let i = 0; i < count; i++) {
+      const col = colors[Math.floor(Math.random() * colors.length)] ?? "#ffffff";
       particles.push({
         x: (Math.random() - 0.5) * width * 1.8,
         y: (Math.random() - 0.5) * height * 1.8,
@@ -66,7 +68,7 @@ export function SpaceParticleCanvas() {
         baseAlpha: Math.random() * 0.7 + 0.3,
         twinkleSpeed: Math.random() * 0.03 + 0.01,
         phase: Math.random() * Math.PI * 2,
-        color: colors[Math.floor(Math.random() * colors.length)],
+        color: col,
         vx: (Math.random() - 0.5) * 0.3,
         vy: (Math.random() - 0.5) * 0.3,
       });
@@ -132,8 +134,8 @@ export function SpaceParticleCanvas() {
       const cy = height / 2;
 
       // Draw star particles with 3D projection & mouse depth parallax
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
+      for (const p of particles) {
+        if (!p) continue;
 
         p.x += p.vx;
         p.y += p.vy;
