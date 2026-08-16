@@ -493,10 +493,10 @@ function Index() {
               }}
             />
 
-            {/* 3D Radio Chassis Root Box with Zoom-Out Morph Animation */}
+            {/* 3D Radio Chassis Root Box with Screen-to-3D Pullback Animation */}
             <div
               className={`radio-3d-chassis preserve-3d relative ${
-                isInitial3DLoad ? "animate-3d-morph-in" : ""
+                isInitial3DLoad ? "animate-screen-to-3d" : ""
               }`}
               onAnimationEnd={() => setIsInitial3DLoad(false)}
               style={{
@@ -528,9 +528,13 @@ function Index() {
 
                 {/* Telescopic Antenna Shaft with Multi-Stage Segments */}
                 <div
-                  className="origin-bottom transition-all duration-500"
+                  className={`origin-bottom transition-all duration-500 ${
+                    isInitial3DLoad ? "animate-antenna-deploy" : ""
+                  }`}
                   style={{
-                    transform: `rotate(${antennaAngle}deg) scaleY(${antennaExtended ? 1 : 0.25})`,
+                    transform: isInitial3DLoad
+                      ? undefined
+                      : `rotate(${antennaAngle}deg) scaleY(${antennaExtended ? 1 : 0.25})`,
                   }}
                 >
                   {/* Segment 1 (Base Tube) */}
