@@ -68,7 +68,6 @@
 @layer base {
   * {
     border-color: var(--color-border);
-    border-radius: 0 !important;
   }
 
   body {
@@ -195,6 +194,7 @@
 /* ========================================================================= */
 
 .uiverse-knob-base {
+  border-radius: 50% !important;
   background: radial-gradient(circle at 50% 50%, #1e1b18 0%, #0d0b09 100%);
   box-shadow:
     0 10px 25px rgba(0, 0, 0, 0.9),
@@ -205,6 +205,7 @@
 }
 
 .uiverse-knob-outer-ring {
+  border-radius: 50% !important;
   background: conic-gradient(
     from 0deg,
     #2a241d 0deg,
@@ -225,6 +226,7 @@
 }
 
 .uiverse-knob-metallic-cap {
+  border-radius: 50% !important;
   background: conic-gradient(
     from -45deg,
     #e6c875 0deg,
@@ -245,6 +247,7 @@
 }
 
 .uiverse-knob-silver-cap {
+  border-radius: 50% !important;
   background: conic-gradient(
     from -45deg,
     #d1d5db 0deg,
@@ -270,6 +273,7 @@
 }
 
 .retro-knurled-dial {
+  border-radius: 50% !important;
   background-color: #1c1813;
   border: 2px solid #4a3b2b;
   box-shadow:
