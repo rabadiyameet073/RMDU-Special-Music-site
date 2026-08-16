@@ -646,26 +646,33 @@ function Index() {
 
                 {/* Bottom Controls: Dials & Piano Keys */}
                 <div className="flex items-center gap-2">
-                  {/* Left Volume Dial */}
+                  {/* Left Volume Dial: UIverse Skeuomorphic Precision Rotary Knob */}
                   <div
                     onWheel={(e) => {
                       e.preventDefault();
                       p.setVolume(p.volume + (e.deltaY < 0 ? 5 : -5));
                     }}
                     title="Volume (Scroll or Click)"
-                    className="size-11 rounded-full bg-[#f59e0b] border-2 border-black flex items-center justify-center relative cursor-pointer shrink-0 shadow-inner"
+                    className="uiverse-knob-base size-12 rounded-full flex items-center justify-center relative cursor-pointer shrink-0 shadow-lg p-0.5"
                   >
-                    <div
-                      className="size-6 rounded-full bg-[#1c1813] border border-black flex items-center justify-center"
-                      style={{ transform: `rotate(${knobAngle}deg)` }}
-                    >
-                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-[2px] h-2.5 bg-black" />
+                    <div className="uiverse-knob-outer-ring size-9 rounded-full flex items-center justify-center relative">
+                      <div
+                        className="uiverse-knob-metallic-cap size-7 rounded-full flex items-center justify-center relative pointer-events-none transition-transform duration-75"
+                        style={{ transform: `rotate(${knobAngle}deg)` }}
+                      >
+                        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-[2px] h-3 bg-[#18120c] rounded-t-sm flex flex-col items-center">
+                          <div className="w-[1.5px] h-1 bg-[#ef4444] shadow-[0_0_3px_#ef4444]" />
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); p.toggleMute(); }}
+                        title={p.muted ? "Unmute" : "Mute"}
+                        className="absolute size-3 rounded-full bg-[#1c1813] border border-amber-500/80 flex items-center justify-center cursor-pointer shadow-sm active:scale-90"
+                      >
+                        <div className={`size-1 rounded-full ${p.muted ? "bg-red-500" : "bg-emerald-400"}`} />
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); p.toggleMute(); }}
-                      className="absolute size-2.5 rounded-full bg-[#3d2f20] border border-amber-400"
-                    />
                   </div>
 
                   {/* Piano Keys Bar */}
@@ -1324,8 +1331,8 @@ function Index() {
               </div>
             </div>
 
-            {/* 4. Left Dial: LAUTSTÄRKE (Vintage Circular Yellow Master Volume Dial) */}
-            <div className="relative flex flex-col items-center justify-center px-0.5">
+            {/* 4. Left Dial: LAUTSTÄRKE (UIverse Skeuomorphic Precision Rotary Volume Knob) */}
+            <div className="relative flex flex-col items-center justify-center px-1">
               <div
                 ref={knobRef}
                 onMouseDown={handleKnobMouseDown}
@@ -1333,78 +1340,88 @@ function Index() {
                   e.preventDefault();
                   p.setVolume(p.volume + (e.deltaY < 0 ? 5 : -5));
                 }}
-                title={`LAUTSTÄRKE (Volume): ${p.muted ? "MUTED" : `${p.volume}%`} (Turn / Drag)`}
-                className="relative size-12 sm:size-13 rounded-full bg-[#f59e0b] border-2 border-[#2b1f14] shadow-inner flex items-center justify-center select-none cursor-grab active:cursor-grabbing overflow-hidden"
+                title={`LAUTSTÄRKE (Volume): ${p.muted ? "MUTED" : `${p.volume}%`} (Click & Drag or Scroll)`}
+                className="uiverse-knob-base relative size-14 sm:size-15 rounded-full flex items-center justify-center select-none cursor-grab active:cursor-grabbing shrink-0"
               >
-                {/* Circular Dial Scale Markings */}
+                {/* Precision Radial LED Arc & Graduation Scale */}
                 <svg className="absolute inset-0 size-full pointer-events-none" viewBox="0 0 100 100">
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="41"
-                    fill="none"
-                    stroke="#1c1917"
-                    strokeWidth="1.5"
-                    strokeDasharray="193 258"
-                    strokeDashoffset="-32"
-                  />
                   {Array.from({ length: 11 }).map((_, i) => {
                     const angle = -135 + i * 27;
                     const rad = (angle - 90) * (Math.PI / 180);
                     const isMajor = i % 2 === 0;
-                    const len = isMajor ? 7 : 4;
-                    const x1 = 50 + 41 * Math.cos(rad);
-                    const y1 = 50 + 41 * Math.sin(rad);
-                    const x2 = 50 + (41 - len) * Math.cos(rad);
-                    const y2 = 50 + (41 - len) * Math.sin(rad);
+                    const isActive = !p.muted && p.volume >= (i * 10 - 2);
+                    const len = isMajor ? 6 : 3.5;
+                    const x1 = 50 + 44 * Math.cos(rad);
+                    const y1 = 50 + 44 * Math.sin(rad);
+                    const x2 = 50 + (44 - len) * Math.cos(rad);
+                    const y2 = 50 + (44 - len) * Math.sin(rad);
+                    const dotX = 50 + 47 * Math.cos(rad);
+                    const dotY = 50 + 47 * Math.sin(rad);
+
                     return (
-                      <line
-                        key={i}
-                        x1={x1}
-                        y1={y1}
-                        x2={x2}
-                        y2={y2}
-                        stroke="#1c1917"
-                        strokeWidth={isMajor ? "2" : "1"}
-                      />
+                      <g key={i}>
+                        {/* Glow LED Dot */}
+                        <circle
+                          cx={dotX}
+                          cy={dotY}
+                          r={isMajor ? "1.5" : "1"}
+                          fill={isActive ? (i === 10 ? "#ef4444" : "#fbbf24") : "#3a3024"}
+                          className={isActive ? "drop-shadow-[0_0_2px_rgba(251,191,36,0.8)]" : ""}
+                        />
+                        {/* Tick Line */}
+                        <line
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke={isActive ? (i === 10 ? "#ef4444" : "#fef08a") : "#4a3c2c"}
+                          strokeWidth={isMajor ? "2" : "1.2"}
+                        />
+                      </g>
                     );
                   })}
-                  <text x="21" y="78" fontSize="8" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">0</text>
-                  <text x="14" y="52" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">2</text>
-                  <text x="26" y="27" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">4</text>
-                  <text x="74" y="27" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">6</text>
-                  <text x="86" y="52" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">8</text>
-                  <text x="79" y="78" fontSize="8" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">10</text>
-                  <text x="50" y="23" fontSize="6" fontWeight="bold" fontFamily="monospace" fill="#1c1917" textAnchor="middle">VOL</text>
+                  <text x="21" y="80" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#d4af37" textAnchor="middle">0</text>
+                  <text x="13" y="52" fontSize="6.5" fontWeight="bold" fontFamily="monospace" fill="#d4af37" textAnchor="middle">2</text>
+                  <text x="25" y="25" fontSize="6.5" fontWeight="bold" fontFamily="monospace" fill="#d4af37" textAnchor="middle">4</text>
+                  <text x="75" y="25" fontSize="6.5" fontWeight="bold" fontFamily="monospace" fill="#d4af37" textAnchor="middle">6</text>
+                  <text x="87" y="52" fontSize="6.5" fontWeight="bold" fontFamily="monospace" fill="#d4af37" textAnchor="middle">8</text>
+                  <text x="79" y="80" fontSize="7" fontWeight="bold" fontFamily="monospace" fill="#ef4444" textAnchor="middle">10</text>
                 </svg>
 
-                {/* Center Bakelite Knob with Rotating Mechanical Pointer Needle */}
-                <div
-                  className="relative size-6 sm:size-7 rounded-full bg-[#181512] border-2 border-black shadow-md flex items-center justify-center transition-transform duration-75 pointer-events-none"
-                  style={{ transform: `rotate(${knobAngle}deg)` }}
-                >
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[2.5px] h-3.5 bg-black border-l border-amber-200 shadow-sm" />
-                  <div className="absolute inset-0 rounded-full border border-amber-900/60" />
-                </div>
+                {/* Outer Knurled Bezel Ring */}
+                <div className="uiverse-knob-outer-ring size-10 sm:size-11 rounded-full flex items-center justify-center relative">
+                  {/* Rotating Machined Metallic Face & Indicator Needle */}
+                  <div
+                    className="uiverse-knob-metallic-cap size-7 sm:size-8 rounded-full flex items-center justify-center relative pointer-events-none transition-transform duration-75"
+                    style={{ transform: `rotate(${knobAngle}deg)` }}
+                  >
+                    {/* Recessed CNC Indicator Line with Pointer */}
+                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-[2.5px] h-3.5 bg-[#18120c] border-x border-[#3d2f1f] rounded-t-sm flex flex-col items-center">
+                      <div className="w-[1.5px] h-1.5 bg-[#ef4444] shadow-[0_0_4px_#ef4444]" />
+                    </div>
+                    {/* Subtle Concentric Lathe Groove */}
+                    <div className="size-5 rounded-full border border-amber-900/40" />
+                  </div>
 
-                {/* Center Metal Cap / Mute Clicker */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    p.toggleMute();
-                  }}
-                  title={p.muted ? "Unmute Volume" : "Mute (Click Center)"}
-                  className="absolute z-10 size-3 sm:size-3.5 rounded-full bg-[#3d2f20] hover:bg-[#523f2b] border border-amber-500/70 flex items-center justify-center cursor-pointer shadow-inner"
-                >
-                  {p.muted ? (
-                    <VolumeX className="size-2 text-red-400" />
-                  ) : (
-                    <div className="size-1 rounded-full bg-amber-400" />
-                  )}
-                </button>
+                  {/* Center Tactile Mute Switch Cap */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      p.toggleMute();
+                    }}
+                    title={p.muted ? "Unmute Volume" : "Mute (Click Center Cap)"}
+                    className="absolute z-10 size-3.5 sm:size-4 rounded-full bg-[#1c1813] hover:bg-[#2b241c] border border-amber-500/80 flex items-center justify-center cursor-pointer shadow-md active:scale-90 transition-transform"
+                  >
+                    {p.muted ? (
+                      <VolumeX className="size-2 text-red-500" />
+                    ) : (
+                      <div className="size-1 rounded-full bg-emerald-400 shadow-[0_0_3px_#34d399]" />
+                    )}
+                  </button>
+                </div>
               </div>
-              <span className="mt-0.5 text-[0.46rem] font-mono-ui text-amber-400/80 font-bold uppercase tracking-wider">
+              <span className="mt-0.5 text-[0.48rem] font-mono-ui text-amber-300 font-bold uppercase tracking-wider">
                 {p.muted ? "MUTED" : `${p.volume}%`}
               </span>
             </div>
