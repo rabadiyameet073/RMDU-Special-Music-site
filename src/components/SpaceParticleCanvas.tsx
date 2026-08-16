@@ -53,8 +53,8 @@ export function SpaceParticleCanvas() {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("touchmove", handleTouchMove, { passive: true });
 
-    // Cosmic Palette
-    const colors = ["#ffffff", "#fef08a", "#fde047", "#e0e7ff", "#93c5fd", "#c4b5fd"];
+    // Pure Black Cosmic Palette with Diamond & Warm Gold Stars (No Blue)
+    const colors = ["#ffffff", "#f8fafc", "#fef08a", "#fde047", "#f1f5f9", "#ffffff", "#fed7aa"];
     const count = window.innerWidth < 768 ? 160 : 320;
     const particles: Particle[] = [];
 
@@ -83,10 +83,9 @@ export function SpaceParticleCanvas() {
       const normMouseX = (mouseX - width / 2) / (width / 2);
       const normMouseY = (mouseY - height / 2) / (height / 2);
 
-      // Deep space void with subtle cosmic nebula gradient
+      // Deep space void: Pure OLED Jet Black Background
       ctx.clearRect(0, 0, width, height);
 
-      // Deep Space Background Glow
       const bgGrad = ctx.createRadialGradient(
         width / 2 - normMouseX * 100,
         height / 2 - normMouseY * 100,
@@ -95,13 +94,13 @@ export function SpaceParticleCanvas() {
         height / 2,
         Math.max(width, height) * 0.85
       );
-      bgGrad.addColorStop(0, "#080b14");
-      bgGrad.addColorStop(0.4, "#05070d");
-      bgGrad.addColorStop(1, "#020306");
+      bgGrad.addColorStop(0, "#050505");
+      bgGrad.addColorStop(0.5, "#020202");
+      bgGrad.addColorStop(1, "#000000");
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      // Subtle celestial nebula dust clouds
+      // Subtle monochromatic galactic dust (No Blue)
       const nebula1 = ctx.createRadialGradient(
         width * 0.3 - normMouseX * 60,
         height * 0.4 - normMouseY * 60,
@@ -110,8 +109,8 @@ export function SpaceParticleCanvas() {
         height * 0.4,
         width * 0.5
       );
-      nebula1.addColorStop(0, "rgba(59, 130, 246, 0.08)");
-      nebula1.addColorStop(0.6, "rgba(147, 51, 234, 0.04)");
+      nebula1.addColorStop(0, "rgba(255, 255, 255, 0.03)");
+      nebula1.addColorStop(0.6, "rgba(250, 250, 250, 0.01)");
       nebula1.addColorStop(1, "transparent");
       ctx.fillStyle = nebula1;
       ctx.fillRect(0, 0, width, height);
@@ -124,8 +123,8 @@ export function SpaceParticleCanvas() {
         height * 0.6,
         width * 0.55
       );
-      nebula2.addColorStop(0, "rgba(217, 119, 6, 0.07)");
-      nebula2.addColorStop(0.5, "rgba(245, 158, 11, 0.03)");
+      nebula2.addColorStop(0, "rgba(217, 119, 6, 0.04)");
+      nebula2.addColorStop(0.5, "rgba(245, 158, 11, 0.015)");
       nebula2.addColorStop(1, "transparent");
       ctx.fillStyle = nebula2;
       ctx.fillRect(0, 0, width, height);

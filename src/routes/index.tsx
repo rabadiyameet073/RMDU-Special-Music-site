@@ -117,8 +117,9 @@ function Index() {
   const activeRef = useRef<HTMLDivElement | null>(null);
   const knobRef = useRef<HTMLDivElement | null>(null);
 
+  const [hasUserSelectedSong, setHasUserSelectedSong] = useState(false);
   const progress = p.duration ? (p.time / p.duration) * 100 : 0;
-  const isPlayingOrSelected = Boolean(p.playing || p.current);
+  const isSongActive = Boolean(p.playing || hasUserSelectedSong);
   const activeSongCover =
     p.current?.thumbnail ||
     (p.current?.videoId
@@ -299,25 +300,23 @@ function Index() {
       {/* ========================================================================= */}
       {/* 🖼️ SINGLE MUTUALLY EXCLUSIVE BACKGROUND: EITHER SONG BANNER OR RMDU STANDBY 🖼️ */}
       {/* ========================================================================= */}
-      <div className="absolute inset-0 size-full overflow-hidden">
-        {isPlayingOrSelected ? (
-          activeSongCover ? (
-            <img
-              key="active-song-cover-bg"
-              src={activeSongCover}
-              alt="Active Song Fullscreen Background"
-              onError={(e) => {
-                e.currentTarget.src = rmduArt;
-              }}
-              className="size-full object-cover object-center"
-            />
-          ) : null
+      <div className="absolute inset-0 size-full overflow-hidden bg-black">
+        {isSongActive && activeSongCover ? (
+          <img
+            key={p.current?.videoId || "active-song-cover-bg"}
+            src={activeSongCover}
+            alt={p.current?.title || "Active Song Fullscreen Background"}
+            onError={(e) => {
+              e.currentTarget.src = rmduArt;
+            }}
+            className="size-full object-cover object-center transition-all duration-700 animate-fadeIn"
+          />
         ) : (
           <img
             key="rmdu-standby-bg"
             src={rmduArt}
             alt="RMDU Special Standby Background"
-            className="size-full object-cover object-center"
+            className="size-full object-cover object-center transition-all duration-700 animate-fadeIn"
           />
         )}
       </div>
@@ -1149,7 +1148,10 @@ function Index() {
                   {/* Song Banner Thumbnail with Live Equalizer */}
                   <button
                     type="button"
-                    onClick={() => p.playAt(i)}
+                    onClick={() => {
+                      setHasUserSelectedSong(true);
+                      p.playAt(i);
+                    }}
                     className="relative z-10 size-12 shrink-0 overflow-hidden bg-black border border-[#4a3826] transition-all text-left cursor-pointer"
                   >
                     <img
@@ -1586,7 +1588,10 @@ function Index() {
 
             {/* PREV STATION KEY */}
             <button
-              onClick={p.prev}
+              onClick={() => {
+                setHasUserSelectedSong(true);
+                p.prev();
+              }}
               title="⏮ PREVIOUS STATION"
               className="retro-piano-key flex-1 py-1.5 px-2 flex items-center justify-center gap-1 text-xs font-mono-ui font-bold cursor-pointer"
             >
@@ -1596,7 +1601,10 @@ function Index() {
 
             {/* MASTER PLAY / PAUSE MECHANICAL KEY */}
             <button
-              onClick={p.toggle}
+              onClick={() => {
+                setHasUserSelectedSong(true);
+                p.toggle();
+              }}
               title={p.playing ? "⏸ PAUSE RECEIVER" : "▶ PLAY RECEIVER"}
               className={`retro-piano-key flex-[1.4] py-1.5 px-2.5 flex items-center justify-center gap-1.5 text-xs font-mono-ui font-bold cursor-pointer ${
                 p.playing ? "active-key bg-[#dfd8c5]" : ""
@@ -1617,7 +1625,10 @@ function Index() {
 
             {/* NEXT STATION KEY */}
             <button
-              onClick={p.next}
+              onClick={() => {
+                setHasUserSelectedSong(true);
+                p.next();
+              }}
               title="⏭ NEXT STATION"
               className="retro-piano-key flex-1 py-1.5 px-2 flex items-center justify-center gap-1 text-xs font-mono-ui font-bold cursor-pointer"
             >
