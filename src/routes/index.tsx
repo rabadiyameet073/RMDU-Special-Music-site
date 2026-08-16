@@ -94,6 +94,7 @@ function Index() {
   const [embedOpen, setEmbedOpen] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [threeDOpen, setThreeDOpen] = useState(false);
+  const [isInitial3DLoad, setIsInitial3DLoad] = useState(true);
   const [rotX, setRotX] = useState(-8);
   const [rotY, setRotY] = useState(18);
   const [zoom, setZoom] = useState(1);
@@ -316,9 +317,12 @@ function Index() {
         <nav className="flex items-center gap-3 sm:gap-4">
           {/* 3D VINTAGE RADIO BUTTON */}
           <button
-            onClick={() => setThreeDOpen(true)}
+            onClick={() => {
+              setIsInitial3DLoad(true);
+              setThreeDOpen(true);
+            }}
             title="Inspect, rotate, and interact with the 3D Vintage Radio Cabinet"
-            className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#d4af37] hover:bg-[#fde047] text-zinc-950 font-mono-ui font-bold text-xs border border-amber-300 transition-colors shadow-md cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#d4af37] hover:bg-[#fde047] text-zinc-950 font-mono-ui font-bold text-xs border border-amber-300 transition-transform active:scale-95 shadow-md cursor-pointer"
           >
             <Box className="size-3.5 text-zinc-950" />
             3D RADIO VIEW
@@ -380,8 +384,11 @@ function Index() {
             QUEUE [{total}]
           </button>
           <button
-            onClick={() => setThreeDOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#2b1f14]/90 hover:bg-[#3d2f20] border border-[#78350f] text-amber-200 font-semibold transition-colors cursor-pointer backdrop-blur-md"
+            onClick={() => {
+              setIsInitial3DLoad(true);
+              setThreeDOpen(true);
+            }}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-[#2b1f14]/90 hover:bg-[#3d2f20] border border-[#78350f] text-amber-200 font-semibold transition-all active:scale-95 cursor-pointer backdrop-blur-md"
           >
             <Box className="size-3.5 text-amber-400" />
             INSPECT 3D
@@ -390,10 +397,10 @@ function Index() {
       </main>
 
       {/* ========================================================================= */}
-      {/* 🌟 3D INTERACTIVE VINTAGE RADIO CABINET MODAL 🌟 */}
+      {/* 🌟 3D INTERACTIVE VINTAGE RADIO CABINET MODAL WITH MORPH ANIMATION 🌟 */}
       {/* ========================================================================= */}
       {threeDOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-xl overflow-hidden select-none">
+        <div className="fixed inset-0 z-50 flex flex-col bg-black/95 backdrop-blur-2xl overflow-hidden select-none animate-3d-backdrop">
           {/* Top 3D Control Strip */}
           <div className="flex items-center justify-between border-b border-[#3d2f20] bg-[#130f0a] px-5 py-3 text-xs text-amber-200">
             <div className="flex items-center gap-3">
@@ -411,25 +418,25 @@ function Index() {
             {/* Quick 3D View Presets */}
             <div className="hidden sm:flex items-center gap-1.5 font-mono-ui text-[0.68rem]">
               <button
-                onClick={() => { setRotX(0); setRotY(0); setZoom(1); }}
+                onClick={() => { setIsInitial3DLoad(false); setRotX(0); setRotY(0); setZoom(1); }}
                 className="px-2.5 py-1 bg-[#241a11] hover:bg-[#38281b] border border-[#4a3826] text-amber-200 cursor-pointer"
               >
                 Front View
               </button>
               <button
-                onClick={() => { setRotX(-12); setRotY(24); setZoom(1); }}
+                onClick={() => { setIsInitial3DLoad(false); setRotX(-12); setRotY(24); setZoom(1); }}
                 className="px-2.5 py-1 bg-[#241a11] hover:bg-[#38281b] border border-[#4a3826] text-amber-200 cursor-pointer"
               >
                 3/4 Angle
               </button>
               <button
-                onClick={() => { setRotX(-35); setRotY(0); setZoom(1); }}
+                onClick={() => { setIsInitial3DLoad(false); setRotX(-35); setRotY(0); setZoom(1); }}
                 className="px-2.5 py-1 bg-[#241a11] hover:bg-[#38281b] border border-[#4a3826] text-amber-200 cursor-pointer"
               >
                 Top Down
               </button>
               <button
-                onClick={() => { setRotX(0); setRotY(90); setZoom(1); }}
+                onClick={() => { setIsInitial3DLoad(false); setRotX(0); setRotY(90); setZoom(1); }}
                 className="px-2.5 py-1 bg-[#241a11] hover:bg-[#38281b] border border-[#4a3826] text-amber-200 cursor-pointer"
               >
                 Side Profile
@@ -457,8 +464,12 @@ function Index() {
 
           {/* 3D Interactive Stage Canvas */}
           <div
-            onMouseDown={handle3DMouseDown}
+            onMouseDown={(e) => {
+              setIsInitial3DLoad(false);
+              handle3DMouseDown(e);
+            }}
             onWheel={(e) => {
+              setIsInitial3DLoad(false);
               e.preventDefault();
               setZoom((prev) => Math.max(0.65, Math.min(1.5, prev + (e.deltaY < 0 ? 0.05 : -0.05))));
             }}
@@ -473,13 +484,18 @@ function Index() {
               }}
             />
 
-            {/* 3D Radio Chassis Root Box */}
+            {/* 3D Radio Chassis Root Box with Zoom-Out Morph Animation */}
             <div
-              className="radio-3d-chassis preserve-3d relative"
+              className={`radio-3d-chassis preserve-3d relative ${
+                isInitial3DLoad ? "animate-3d-morph-in" : ""
+              }`}
+              onAnimationEnd={() => setIsInitial3DLoad(false)}
               style={{
                 width: "480px",
                 height: "300px",
-                transform: `scale(${zoom}) rotateX(${rotX}deg) rotateY(${rotY}deg)`,
+                transform: isInitial3DLoad
+                  ? undefined
+                  : `scale(${zoom}) rotateX(${rotX}deg) rotateY(${rotY}deg)`,
               }}
             >
               {/* ========================================================= */}

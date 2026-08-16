@@ -213,6 +213,43 @@
 /* 🌟 3D INTERACTIVE VINTAGE RADIO CABINET ENGINE (CSS 3D PRESERVE-3D) 🌟 */
 /* ========================================================================= */
 
+@keyframes radio-3d-zoom-morph {
+  0% {
+    opacity: 0;
+    transform: scale(0.35) rotateX(40deg) rotateY(-35deg) translateZ(-600px);
+    filter: blur(10px);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.04) rotateX(-14deg) rotateY(24deg) translateZ(40px);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateX(-8deg) rotateY(18deg) translateZ(0px);
+    filter: blur(0px);
+  }
+}
+
+.animate-3d-morph-in {
+  animation: radio-3d-zoom-morph 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes backdrop-zoom-blur {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(20px);
+  }
+}
+
+.animate-3d-backdrop {
+  animation: backdrop-zoom-blur 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .perspective-1200 {
   perspective: 1200px;
 }
@@ -227,7 +264,7 @@
 
 .radio-3d-chassis {
   transform-style: preserve-3d;
-  transition: transform 0.05s ease-out;
+  transition: transform 0.08s ease-out;
 }
 
 .chassis-face {
