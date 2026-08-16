@@ -76,7 +76,11 @@ function loadApi(): Promise<void> {
   });
 }
 
-type Meta = { title?: string; author?: string; thumbnail_url?: string };
+type Meta = {
+  title?: string | undefined;
+  author?: string | undefined;
+  thumbnail_url?: string | undefined;
+};
 
 export async function fetchMeta(videoId: string): Promise<Meta> {
   // 1. Try official YouTube oEmbed API for highest accuracy
@@ -195,7 +199,7 @@ export function extractYouTubeId(urlOrId: string): string | null {
   const match = trimmed.match(
     /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([a-zA-Z0-9_-]{11})/,
   );
-  return match ? match[1] : null;
+  return match?.[1] ?? null;
 }
 
 export function useYouTubePlaylist() {
@@ -512,7 +516,9 @@ export function useYouTubePlaylist() {
       }
       const copy = [...prev];
       const [moved] = copy.splice(fromIndex, 1);
-      copy.splice(toIndex, 0, moved);
+      if (moved) {
+        copy.splice(toIndex, 0, moved);
+      }
 
       // Adjust index
       setIndex((cur) => {
@@ -526,16 +532,19 @@ export function useYouTubePlaylist() {
     });
   }, []);
 
-  const moveTrackToTop = useCallback((fromIndex: number) => {
-    moveTrack(fromIndex, 0);
-  }, [moveTrack]);
+  const moveTrackToTop = useCallback(
+    (fromIndex: number) => {
+      moveTrack(fromIndex, 0);
+    },
+    [moveTrack],
+  );
 
-  const moveTrackToBottom = useCallback((fromIndex: number) => {
-    setTracks((prev) => {
-      if (fromIndex < 0 || fromIndex >= prev.length || fromIndex === prev.length - 1) return prev;
-      return moveTrack(fromIndex, prev.length - 1);
-    });
-  }, [moveTrack]);
+  const moveTrackToBottom = useCallback(
+    (fromIndex: number) => {
+      moveTrack(fromIndex, tracksRef.current.length - 1);
+    },
+    [moveTrack],
+  );
 
   const shuffleQueue = useCallback(() => {
     setTracks((prev) => {
@@ -545,7 +554,12 @@ export function useYouTubePlaylist() {
       // Fisher-Yates shuffle
       for (let i = copy.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
+        const itemI = copy[i];
+        const itemJ = copy[j];
+        if (itemI && itemJ) {
+          copy[i] = itemJ;
+          copy[j] = itemI;
+        }
       }
       // Re-find current track index
       if (currentTrack) {

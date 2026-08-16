@@ -299,6 +299,9 @@ function Index() {
               key="active-song-cover-bg"
               src={activeSongCover}
               alt="Active Song Fullscreen Background"
+              onError={(e) => {
+                e.currentTarget.src = rmduArt;
+              }}
               className="size-full object-cover object-center"
             />
           ) : null
@@ -1142,6 +1145,9 @@ function Index() {
                     <img
                       src={t.thumbnail}
                       alt={t.title}
+                      onError={(e) => {
+                        e.currentTarget.src = rmduArt;
+                      }}
                       className="size-full object-cover"
                     />
                     {active && (
