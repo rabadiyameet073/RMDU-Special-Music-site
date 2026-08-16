@@ -244,13 +244,13 @@ function Index() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#0c0d10] font-body select-none">
       {/* ========================================================================= */}
-      {/* 🖼️ BACKGROUND SYSTEM: CLEAR & VISIBLE ARTWORK DURING PLAYBACK 🖼️ */}
+      {/* 🖼️ BACKGROUND SYSTEM: FULLSCREEN RMDU (STANDBY) vs FULLSCREEN SONG BANNER (PLAYING) 🖼️ */}
       {/* ========================================================================= */}
 
-      {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork */}
+      {/* Layer 1: Standby / Idle Fullscreen Background with RMDU Artwork (Hidden when playing) */}
       <div
-        className={`absolute inset-0 size-full flex items-center justify-center transition-all duration-700 ${
-          p.playing && currentCover ? "opacity-40" : "opacity-100"
+        className={`absolute inset-0 size-full transition-opacity duration-700 ${
+          p.playing && currentCover ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >
         <img
@@ -260,23 +260,23 @@ function Index() {
         />
       </div>
 
-      {/* Layer 2: Dynamic Full-Screen Song Banner (Sharp & Clearly Visible without heavy blur) */}
+      {/* Layer 2: Dynamic Fullscreen Song Banner Background (Active & Fullscreen during playback) */}
       {currentCover && (
         <div
-          className={`absolute inset-0 size-full transition-all duration-700 ${
-            p.playing ? "opacity-80" : "opacity-0 pointer-events-none"
+          className={`absolute inset-0 size-full transition-opacity duration-700 ${
+            p.playing ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
           <img
             src={currentCover}
-            alt="Song Background Banner"
-            className="size-full object-cover object-center"
+            alt="Active Song Fullscreen Background"
+            className="size-full object-cover object-center scale-100"
           />
         </div>
       )}
 
-      {/* Subtle Atmospheric Top & Bottom Vignettes (Gentle tint so text is readable while image is clearly seen) */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/55 pointer-events-none" />
+      {/* Subtle Atmospheric Top & Bottom Vignettes (Keeps header and player readable over fullscreen image) */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/55 pointer-events-none" />
 
       {/* ========================================================================= */}
       {/* TOP HEADER BAR: STATION STATUS & 3D RADIO VIEW BUTTON */}
